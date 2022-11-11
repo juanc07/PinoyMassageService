@@ -9,15 +9,14 @@
     }
   },
   "profiles": {
-    "PinoyMassageService": {
+    "PinoyMassage": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://localhost:5060",
-      "dotnetRunMessages": true
+      "applicationUrl": "http://localhost:5000"
     },
     "IIS Express": {
       "commandName": "IISExpress",
