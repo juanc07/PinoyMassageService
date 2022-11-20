@@ -6,7 +6,7 @@ namespace PinoyMassageService.Repositories
 {
     public class MongoDbAccountRepository: IAccountsRepository
     {
-        public const string databaseName = "PinoyMassage";
+        public const string databaseName = "pinoymassage";
         public const string collectionName = "accounts";
         private readonly IMongoCollection<Account> accountsCollection;
         private readonly FilterDefinitionBuilder<Account> filterBuilder = Builders<Account>.Filter;
@@ -31,6 +31,30 @@ namespace PinoyMassageService.Repositories
         public async Task<Account> GetAccountAsync(Guid id)
         {
             var filter = filterBuilder.Eq(account => account.Id, id);
+            return await accountsCollection.Find(filter).FirstOrDefaultAsync();
+        }
+
+        public async Task<Account> GetAccountByUserNameAsync(string username)
+        {
+            var filter = filterBuilder.Eq(account => account.UserName, username);
+            return await accountsCollection.Find(filter).FirstOrDefaultAsync();
+        }
+
+        public async Task<Account> GetAccountByEmailAsync(string email)
+        {
+            var filter = filterBuilder.Eq(account => account.Email, email);
+            return await accountsCollection.Find(filter).FirstOrDefaultAsync();
+        }        
+
+        public async Task<Account> GetAccountByMobileNumberAsync(string mobilenumber)
+        {
+            var filter = filterBuilder.Eq(account => account.MobileNumber, mobilenumber);
+            return await accountsCollection.Find(filter).FirstOrDefaultAsync();
+        }        
+
+        public async Task<Account> GetAccountByHandleNameAsync(string handlename)
+        {
+            var filter = filterBuilder.Eq(account => account.HandleName, handlename);
             return await accountsCollection.Find(filter).FirstOrDefaultAsync();
         }
 
