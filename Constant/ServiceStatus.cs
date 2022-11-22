@@ -1,6 +1,6 @@
 ﻿namespace PinoyMassageService.Constant
 {
-    public class ServiceOrderStatus
+    public class ServiceStatus
     {
         public const int Pending = 0;
         public const int Accepted = 1;

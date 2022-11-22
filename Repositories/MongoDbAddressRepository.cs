@@ -22,9 +22,9 @@ namespace PinoyMassageService.Repositories
             await addressCollection.InsertOneAsync(address);
         }        
 
-        public async Task<Address> GetAddressAsync(Guid Id)
+        public async Task<Address> GetAddressAsync(Guid id)
         {
-            var filter = filterBuilder.Eq(address => address.Id, Id);
+            var filter = filterBuilder.Eq(address => address.Id, id);
             return await addressCollection.Find(filter).FirstOrDefaultAsync();
         }
 
@@ -45,9 +45,9 @@ namespace PinoyMassageService.Repositories
             await addressCollection.ReplaceOneAsync(filter, address);
         }
 
-        public async Task DeleteAddressAsync(Guid Id)
+        public async Task DeleteAddressAsync(Guid id)
         {
-            var filter = filterBuilder.Eq(address => address.Id, Id);
+            var filter = filterBuilder.Eq(address => address.Id, id);
             await addressCollection.DeleteOneAsync(filter);
         }
 

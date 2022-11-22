@@ -4,6 +4,7 @@ using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using PinoyMassageService.Repositories;
 using PinoyMassageService.Settings;
+using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +16,6 @@ BsonSerializer.RegisterSerializer(new DateTimeOffsetSerializer(BsonType.String))
 var mongoDbSettings = builder.Configuration.GetSection(nameof(MongoDBSettings)).Get<MongoDBSettings>();
 
 
-
 builder.Services.AddSingleton<IMongoClient>(serviceProvider =>
 {
 
@@ -24,6 +24,7 @@ builder.Services.AddSingleton<IMongoClient>(serviceProvider =>
 });
 builder.Services.AddSingleton<IAccountsRepository, MongoDbAccountRepository>();
 builder.Services.AddSingleton<IAddressRepository, MongoDbAddressRepository>();
+builder.Services.AddSingleton<IProfileImageRepository, MongoDbProfileImageRepository>();
 
 builder.Services.AddControllers(options =>
 {
@@ -53,6 +54,18 @@ app.UseEndpoints(endpoints =>
     //endpoints.MapControllers();    
     endpoints.MapGet("/hello", () => "Hello!");
     endpoints.MapGet("/hi", () => "Hi!");
+    endpoints.MapGet("/image", () =>
+    {
+        byte[] binaryContent = File.ReadAllBytes("D:\\2022\\gigs\\pinoy-massage-app\\images\\smiley.png");
+        Debug.WriteLine($"binaryContent: {binaryContent}");
+        return binaryContent;
+    });
+    endpoints.MapGet("/image2", () =>
+    {
+        byte[] binaryContent = File.ReadAllBytes("D:\\2022\\gigs\\pinoy-massage-app\\images\\smiley2.jpg");
+        Debug.WriteLine($"binaryContent: {binaryContent}");
+        return binaryContent;
+    });
 });
 
 

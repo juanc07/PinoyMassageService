@@ -2,13 +2,12 @@
 using PinoyMassageService.Entities;
 using PinoyMassageService.Extensions;
 using PinoyMassageService.Repositories;
-using System.Net;
 using static PinoyMassageService.Dtos.AccountDtos;
 using static PinoyMassageService.Dtos.AddressDtos;
 
 namespace PinoyMassageService.Controllers
 {
-    [ApiController]    
+    [ApiController]
     [Route("[controller]/[action]")]
     public class AddressController : ControllerBase
     {
@@ -19,7 +18,7 @@ namespace PinoyMassageService.Controllers
         {
             this.repository = repository;
             this.logger = logger;
-        }        
+        }
 
         [HttpPost]
         public async Task<ActionResult<AddressDto>> CreateAddressAsync(CreateAddressDto addressDto)
@@ -45,7 +44,7 @@ namespace PinoyMassageService.Controllers
             return BadRequest("Address already exists!");
         }
 
-        // GET /address/{id}
+        // GET /Address/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<AddressDto>> GetAddressAsync(Guid id)
         {
@@ -57,7 +56,7 @@ namespace PinoyMassageService.Controllers
             return address.AsDto();
         }
 
-        // GET /address/{id}
+        // GET /Address/{id}
         [HttpGet("{accountId}")]
         public async Task<ActionResult<AddressDto>> GetAddressByAccountIdAsync(Guid accountId)
         {
@@ -69,7 +68,7 @@ namespace PinoyMassageService.Controllers
             return address.AsDto();
         }
 
-        // Gets /accounts        
+        // /Address/GetAddressesAsync
         [HttpGet]
         public async Task<IEnumerable<AddressDto>> GetAddressesAsync()
         {
@@ -77,6 +76,25 @@ namespace PinoyMassageService.Controllers
 
             logger.LogInformation($"{DateTime.UtcNow.ToString("hh:mm:ss")}: GetAddressesAsync Retrieved {addresses.Count()} addresses");
             return addresses;
+        }        
+
+        [HttpPut("{id}")]        
+        public async Task<ActionResult> UpdateAddressAsync(Guid id, UpdateAddressDto addressDto)
+        {
+            var existingAddress = await repository.GetAddressAsync(id);
+            if (existingAddress is null)
+            {
+                return NotFound();
+            }
+
+            existingAddress.StreetNumber = addressDto.StreetNumber;
+            existingAddress.Branggay = addressDto.Branggay;
+            existingAddress.City = addressDto.City;
+            existingAddress.Country = addressDto.Country;
+            existingAddress.ZipCode = addressDto.ZipCode;
+
+            await repository.UpdateAddressAsync(existingAddress);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
@@ -116,7 +134,7 @@ namespace PinoyMassageService.Controllers
             else
             {
                 return Content($"Address deleted count: {deleteResult.DeletedCount}");
-            }            
+            }
         }
     }
 }

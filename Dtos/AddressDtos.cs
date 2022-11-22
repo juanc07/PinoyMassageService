@@ -10,6 +10,7 @@ namespace PinoyMassageService.Dtos
         public record CreateAddressDto([Required] Guid AccountId, string StreetNumber, string Branggay, string City,
              string Country, string ZipCode, DateTimeOffset CreatedDate);
 
-        //public record DeleteAddressDto(Guid AccountId);
+        public record UpdateAddressDto(string StreetNumber, string Branggay, string City,
+             string Country, string ZipCode);
     }
 }

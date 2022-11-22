@@ -20,8 +20,7 @@ namespace PinoyMassageService.Dtos
         public record UpdateEmailDto(string Email);
 
         // identification info
-        public record UpdateIdentificationDto(string IdentificationType, string IdentificationNumber);
-        public record UpdateAddressDto(string IdentificationType, Address Address);
+        public record UpdateIdentificationDto(string IdentificationType, string IdentificationNumber);        
 
         // all mutable account info
         public record UpdateAccountDto(string FirstName, string LastName, string HandleName,
