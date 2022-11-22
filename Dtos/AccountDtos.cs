@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using PinoyMassageService.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace PinoyMassageService.Dtos
 {
@@ -7,8 +8,8 @@ namespace PinoyMassageService.Dtos
         public record AccountDto(Guid Id, string UserName, string Password, string Email, int AccountType, int Gender,
             string FirstName, string LastName, string HandleName, DateTimeOffset BirthDate, int Age, DateTimeOffset CreatedDate,
             string MobileNumber,string FacebookId,string IdentificationType, string IdentificationNumber, bool IsVerified);
-        public record CreateAccountDto([Required] string UserName, string Password, string Email, string HandleName,
-           string MobileNumber, int AccountType,int Gender, DateTimeOffset BirthDate, DateTimeOffset CreatedDate);
+        public record CreateAccountDto([Required] string UserName,[Required] string Password, string Email, string MobileNumber,
+            string HandleName,int AccountType,int Gender, DateTimeOffset BirthDate, DateTimeOffset CreatedDate);
 
         // Basic information        
         public record UpdateBasicDto( string FirstName, string LastName, string HandleName);
@@ -16,9 +17,11 @@ namespace PinoyMassageService.Dtos
         public record UpdatePasswordDto(string Password);
         // contact info
         public record UpdateMobileNumberDto(string MobileNumber);
+        public record UpdateEmailDto(string Email);
 
         // identification info
         public record UpdateIdentificationDto(string IdentificationType, string IdentificationNumber);
+        public record UpdateAddressDto(string IdentificationType, Address Address);
 
         // all mutable account info
         public record UpdateAccountDto(string FirstName, string LastName, string HandleName,

@@ -20,13 +20,7 @@ namespace PinoyMassageService.Repositories
         public async Task CreateAccountAsync(Account account)
         {
             await accountsCollection.InsertOneAsync(account);
-        }
-
-        public async Task DeleteAccountAsync(Guid id)
-        {
-            var filter = filterBuilder.Eq(account => account.Id, id);
-            await accountsCollection.DeleteOneAsync(filter);
-        }
+        }        
 
         public async Task<Account> GetAccountAsync(Guid id)
         {
@@ -67,6 +61,12 @@ namespace PinoyMassageService.Repositories
         {
             var filter = filterBuilder.Eq(existingAccount => existingAccount.Id, account.Id);
             await accountsCollection.ReplaceOneAsync(filter, account);
+        }
+
+        public async Task DeleteAccountAsync(Guid id)
+        {
+            var filter = filterBuilder.Eq(account => account.Id, id);
+            await accountsCollection.DeleteOneAsync(filter);
         }
     }
 }

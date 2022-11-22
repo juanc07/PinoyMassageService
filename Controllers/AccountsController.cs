@@ -169,6 +169,71 @@ namespace PinoyMassageService.Controllers
             return NoContent();
         }
 
+        // PUT /accounts/id        
+        [HttpPut("{id}")]        
+        public async Task<ActionResult> UpdatePasswordAsync(Guid id, UpdatePasswordDto UpdatePasswordDto)
+        {
+            var existingAccount = await repository.GetAccountAsync(id);
+            if (existingAccount is null)
+            {
+                return NotFound();
+            }
+
+            existingAccount.Password = UpdatePasswordDto.Password;            
+
+            await repository.UpdateAccountAsync(existingAccount);
+            return NoContent();
+        }
+
+        // PUT /accounts/id        
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateMobileNumberAsync(Guid id, UpdateMobileNumberDto UpdateMobileNumberDto)
+        {
+            var existingAccount = await repository.GetAccountAsync(id);
+            if (existingAccount is null)
+            {
+                return NotFound();
+            }
+
+            existingAccount.MobileNumber = UpdateMobileNumberDto.MobileNumber;
+
+            await repository.UpdateAccountAsync(existingAccount);
+            return NoContent();
+        }
+
+        // PUT /accounts/id        
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateEmailAsync(Guid id, UpdateEmailDto updateEmailDto)
+        {
+            var existingAccount = await repository.GetAccountAsync(id);
+            if (existingAccount is null)
+            {
+                return NotFound();
+            }
+
+            existingAccount.Email = updateEmailDto.Email;
+
+            await repository.UpdateAccountAsync(existingAccount);
+            return NoContent();
+        }
+
+        // PUT /accounts/id        
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateIdentificationAsync(Guid id, UpdateIdentificationDto identificationDto)
+        {
+            var existingAccount = await repository.GetAccountAsync(id);
+            if (existingAccount is null)
+            {
+                return NotFound();
+            }
+
+            existingAccount.IdentificationType = identificationDto.IdentificationType;
+            existingAccount.IdentificationNumber = identificationDto.IdentificationNumber;
+
+            await repository.UpdateAccountAsync(existingAccount);
+            return NoContent();
+        }
+
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteAccountAsync(Guid id)
         {

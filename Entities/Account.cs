@@ -24,7 +24,8 @@ namespace PinoyMassageService.Entities
         public string MobileNumber { get; set; }        
         public string FacebookId { get; set; }
         public int Age { get; set; }
-        
+        public Address? Address { get; set; }
+
 
         // identification info
         public string IdentificationType { get; set; }

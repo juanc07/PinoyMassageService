@@ -23,6 +23,7 @@ builder.Services.AddSingleton<IMongoClient>(serviceProvider =>
     //return new MongoClient("mongodb://myroot:my-super-secret-password@localhost:31000/");            
 });
 builder.Services.AddSingleton<IAccountsRepository, MongoDbAccountRepository>();
+builder.Services.AddSingleton<IAddressRepository, MongoDbAddressRepository>();
 
 builder.Services.AddControllers(options =>
 {
