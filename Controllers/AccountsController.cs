@@ -11,10 +11,10 @@ namespace PinoyMassageService.Controllers
     [Route("[controller]/[action]")]
     public class AccountsController:ControllerBase
     {
-        private readonly IAccountsRepository repository;
+        private readonly IAccountRepository repository;
         private readonly ILogger<AccountsController> logger;
 
-        public AccountsController(IAccountsRepository repository, ILogger<AccountsController> logger)
+        public AccountsController(IAccountRepository repository, ILogger<AccountsController> logger)
         {
             this.repository = repository;
             this.logger = logger;

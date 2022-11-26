@@ -22,7 +22,7 @@ builder.Services.AddSingleton<IMongoClient>(serviceProvider =>
     return new MongoClient(mongoDbSettings.ConnectionString);
     //return new MongoClient("mongodb://myroot:my-super-secret-password@localhost:31000/");            
 });
-builder.Services.AddSingleton<IAccountsRepository, MongoDbAccountRepository>();
+builder.Services.AddSingleton<IAccountRepository, MongoDbAccountRepository>();
 builder.Services.AddSingleton<IAddressRepository, MongoDbAddressRepository>();
 builder.Services.AddSingleton<IProfileImageRepository, MongoDbProfileImageRepository>();
 
@@ -63,6 +63,20 @@ app.UseEndpoints(endpoints =>
     endpoints.MapGet("/image2", () =>
     {
         byte[] binaryContent = File.ReadAllBytes("D:\\2022\\gigs\\pinoy-massage-app\\images\\smiley2.jpg");
+        Debug.WriteLine($"binaryContent: {binaryContent}");
+        return binaryContent;
+    });
+
+    endpoints.MapGet("/image3", () =>
+    {
+        byte[] binaryContent = File.ReadAllBytes("D:\\2022\\gigs\\pinoy-massage-app\\images\\smiley3.jpg");
+        Debug.WriteLine($"binaryContent: {binaryContent}");
+        return binaryContent;
+    });
+
+    endpoints.MapGet("/image4", () =>
+    {
+        byte[] binaryContent = File.ReadAllBytes("D:\\2022\\gigs\\pinoy-massage-app\\images\\smiley4.jpg");
         Debug.WriteLine($"binaryContent: {binaryContent}");
         return binaryContent;
     });

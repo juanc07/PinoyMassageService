@@ -9,17 +9,17 @@
 
         // Massage type or types
         public string ServiceOffer { get; set; }
+        // per hour
         public int ServicePrice { get; set; }
-
+        public int Duration { get; set; }        
+        public string MeetUpLocation { get; set; }
         // will be zero if the client is a subscriber
         // we only take money from client , the provider will be free at the beginning until we decide that we can ask them
         public int CreditCost { get; set; }
 
-        public int Duration { get; set; }        
-        public string MeetUpLocation { get; set; }
-
-        // Pending, Accepted, Completed,Canceled, Expired
+        //Active, Pending, Accepted, Completed,Canceled, Expired
         public int Status { get; set; }
+        // after 10 hours when accepted or eve didn't accept?
         public DateTimeOffset ExpiredAt { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
     }

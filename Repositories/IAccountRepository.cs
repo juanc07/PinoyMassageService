@@ -2,7 +2,7 @@
 
 namespace PinoyMassageService.Repositories
 {
-    public interface IAccountsRepository
+    public interface IAccountRepository
     {
         Task<Account> GetAccountAsync(Guid id);
         Task<Account> GetAccountByUserNameAsync(string username);

@@ -4,7 +4,7 @@ using PinoyMassageService.Entities;
 
 namespace PinoyMassageService.Repositories
 {
-    public class MongoDbAccountRepository: IAccountsRepository
+    public class MongoDbAccountRepository: IAccountRepository
     {
         public const string databaseName = "pinoymassage";
         public const string collectionName = "accounts";
