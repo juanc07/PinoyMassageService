@@ -39,7 +39,7 @@ namespace PinoyMassageService.Controllers
                     MeetUpLocation = serviceDto.MeetUpLocation,
                     Status = serviceDto.Status,
                     CreditCost = serviceDto.CreditCost,
-                    ExpiredAt = DateTimeOffset.UtcNow.AddHours(10),
+                    ExpiredAt = DateTimeOffset.UtcNow.AddHours(APIConfig.ServiceExpirationInHours),
                     CreatedDate = DateTimeOffset.UtcNow
                 };
 
