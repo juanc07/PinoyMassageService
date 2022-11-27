@@ -93,6 +93,23 @@ namespace PinoyMassageService.Controllers
             return NoContent();
         }
 
+        [HttpPut("{accountId}")]
+        public async Task<ActionResult> UpdateProfileImageByAccountIdAsync(Guid accountId, UpdateProfileImageDto profileImageDto)
+        {
+            var existingProfileImage = await repository.GetProfileImageByAccountIdAsync(accountId);
+            if (existingProfileImage is null)
+            {
+                return NotFound();
+            }
+
+            existingProfileImage.Image = profileImageDto.Image;
+            existingProfileImage.Description = profileImageDto.Description;
+
+
+            await repository.UpdateProfileImageAsync(existingProfileImage);
+            return NoContent();
+        }
+
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteProfileImageAsync(Guid id)
         {

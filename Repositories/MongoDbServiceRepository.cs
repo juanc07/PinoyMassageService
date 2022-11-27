@@ -60,7 +60,7 @@ namespace PinoyMassageService.Repositories
 
         public async Task DeleteServiceByProviderIdAsync(Guid providerId)
         {
-            var filter = filterBuilder.Eq(existingService => existingService.Id, providerId);
+            var filter = filterBuilder.Eq(existingService => existingService.ProviderId, providerId);
             await serviceCollection.DeleteOneAsync(filter);
         }        
 

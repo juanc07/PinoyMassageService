@@ -109,7 +109,7 @@ namespace PinoyMassageService.Controllers
 
             if (!string.IsNullOrWhiteSpace(userName))
             {
-                accounts = accounts.Where(account => account.UserName.Contains(userName, StringComparison.OrdinalIgnoreCase));
+                accounts = accounts.Where(account => account.UserName.Equals(userName, StringComparison.OrdinalIgnoreCase));
             }
 
             logger.LogInformation($"{DateTime.UtcNow.ToString("hh:mm:ss")}: Retrieved {accounts.Count()} accounts");

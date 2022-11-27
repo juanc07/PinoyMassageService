@@ -25,6 +25,7 @@ builder.Services.AddSingleton<IMongoClient>(serviceProvider =>
 builder.Services.AddSingleton<IAccountRepository, MongoDbAccountRepository>();
 builder.Services.AddSingleton<IAddressRepository, MongoDbAddressRepository>();
 builder.Services.AddSingleton<IProfileImageRepository, MongoDbProfileImageRepository>();
+builder.Services.AddSingleton<IServiceRepository, MongoDbServiceRepository>();
 
 builder.Services.AddControllers(options =>
 {

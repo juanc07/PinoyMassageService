@@ -22,5 +22,7 @@
         // after 10 hours when accepted or eve didn't accept?
         public DateTimeOffset ExpiredAt { get; set; }
         public DateTimeOffset CreatedDate { get; set; }
+        // when service is actually completed or canceled 
+        public DateTimeOffset CompletedDate { get; set; }
     }
 }
