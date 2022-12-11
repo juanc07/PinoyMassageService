@@ -2,7 +2,6 @@
 using PinoyMassageService.Entities;
 using PinoyMassageService.Extensions;
 using PinoyMassageService.Repositories;
-using static PinoyMassageService.Dtos.AccountDtos;
 using static PinoyMassageService.Dtos.AddressDtos;
 
 namespace PinoyMassageService.Controllers
@@ -23,13 +22,13 @@ namespace PinoyMassageService.Controllers
         [HttpPost]
         public async Task<ActionResult<AddressDto>> CreateAddressAsync(CreateAddressDto addressDto)
         {
-            var foundAddress = await repository.GetAddressByAccountIdAsync(addressDto.AccountId);
+            var foundAddress = await repository.GetAddressByUserIdAsync(addressDto.userId);
             if (foundAddress is null)
             {
                 Address address = new()
                 {
                     Id = Guid.NewGuid(),
-                    AccountId = addressDto.AccountId,
+                    UserId = addressDto.userId,
                     StreetNumber = addressDto.StreetNumber,
                     Branggay = addressDto.Branggay,
                     City = addressDto.City,
@@ -57,10 +56,10 @@ namespace PinoyMassageService.Controllers
         }
 
         // GET /Address/{id}
-        [HttpGet("{accountId}")]
-        public async Task<ActionResult<AddressDto>> GetAddressByAccountIdAsync(Guid accountId)
+        [HttpGet("{userId}")]
+        public async Task<ActionResult<AddressDto>> GetAddressByUserIdAsync(Guid userId)
         {
-            var address = await repository.GetAddressByAccountIdAsync(accountId);
+            var address = await repository.GetAddressByUserIdAsync(userId);
             if (address is null)
             {
                 return NotFound();
@@ -110,23 +109,23 @@ namespace PinoyMassageService.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{accountId}")]
-        public async Task<ActionResult> DeleteAddressByAccountIdAsync(Guid accountId)
+        [HttpDelete("{userId}")]
+        public async Task<ActionResult> DeleteAddressByUserIdAsync(Guid userId)
         {
-            var existingAddress = await repository.GetAddressByAccountIdAsync(accountId);
+            var existingAddress = await repository.GetAddressByUserIdAsync(userId);
             if (existingAddress is null)
             {
                 return NotFound();
             }
 
-            await repository.DeleteAddressByAccountIdAsync(accountId);
+            await repository.DeleteAddressByUserIdAsync(userId);
             return NoContent();
         }
 
-        [HttpDelete("{accountId}")]
-        public async Task<ActionResult> DeleteAllAddressByAccountIdAsync(Guid accountId)
+        [HttpDelete("{userId}")]
+        public async Task<ActionResult> DeleteAllAddressByUserIdAsync(Guid userId)
         {
-            var deleteResult = await repository.DeleteAllAddressByAccountIdAsync(accountId);
+            var deleteResult = await repository.DeleteAllAddressByUserIdAsync(userId);
             if (deleteResult.DeletedCount == 0)
             {
                 return NotFound();

@@ -3,7 +3,7 @@
     public class Address
     {
         public Guid Id { get; set; }
-        public Guid AccountId { get; set; }
+        public Guid UserId { get; set; }
         public string StreetNumber { get; set; }
         public string Branggay { get; set; }
         public string City { get; set; }        

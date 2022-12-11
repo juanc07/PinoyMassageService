@@ -7,7 +7,7 @@ namespace PinoyMassageService.Extensions
     {
         public static ProfileImageDto AsDto(this ProfileImage profileImage)
         {
-            return new ProfileImageDto(profileImage.Id, profileImage.AccountId, profileImage.Image,
+            return new ProfileImageDto(profileImage.Id, profileImage.userId, profileImage.Image,
                 profileImage.Description, profileImage.CreatedDate);
         }
     }

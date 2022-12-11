@@ -5,10 +5,10 @@ namespace PinoyMassageService.Dtos
 {
     public class AccountDtos
     {
-        public record AccountDto(Guid Id, string UserName, string Password, string Email, int AccountType, int Gender,
+        public record AccountDto(Guid Id, Guid UserId, string UserName, string Password, string Email, int AccountType, int Gender,
             string FirstName, string LastName, string HandleName, DateTimeOffset BirthDate, int Age, DateTimeOffset CreatedDate,
             string MobileNumber,string FacebookId,string IdentificationType, string IdentificationNumber, bool IsVerified);
-        public record CreateAccountDto([Required] string UserName,[Required] string Password, string Email, string MobileNumber,
+        public record CreateAccountDto([Required] Guid UserId, [Required] string UserName,[Required] string Password, string Email, string MobileNumber,
             string HandleName,int AccountType,int Gender, DateTimeOffset BirthDate, DateTimeOffset CreatedDate);
 
         // Basic information        

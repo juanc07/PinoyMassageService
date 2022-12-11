@@ -28,9 +28,9 @@ namespace PinoyMassageService.Repositories
             return await addressCollection.Find(filter).FirstOrDefaultAsync();
         }
 
-        public async Task<Address> GetAddressByAccountIdAsync(Guid accountId)
+        public async Task<Address> GetAddressByUserIdAsync(Guid userId)
         {
-            var filter = filterBuilder.Eq(address => address.AccountId, accountId);
+            var filter = filterBuilder.Eq(address => address.UserId, userId);
             return await addressCollection.Find(filter).FirstOrDefaultAsync();
         }
 
@@ -41,7 +41,7 @@ namespace PinoyMassageService.Repositories
 
         public async Task UpdateAddressAsync(Address address)
         {
-            var filter = filterBuilder.Eq(existingAccount => existingAccount.AccountId, address.AccountId);
+            var filter = filterBuilder.Eq(existingAccount => existingAccount.UserId, address.UserId);
             await addressCollection.ReplaceOneAsync(filter, address);
         }
 
@@ -51,15 +51,15 @@ namespace PinoyMassageService.Repositories
             await addressCollection.DeleteOneAsync(filter);
         }
 
-        public async Task DeleteAddressByAccountIdAsync(Guid accountId)
+        public async Task DeleteAddressByUserIdAsync(Guid userId)
         {
-            var filter = filterBuilder.Eq(address => address.AccountId, accountId);
+            var filter = filterBuilder.Eq(address => address.UserId, userId);
             await addressCollection.DeleteOneAsync(filter);
         }
 
-        public async Task<DeleteResult> DeleteAllAddressByAccountIdAsync(Guid accountId)
+        public async Task<DeleteResult> DeleteAllAddressByUserIdAsync(Guid UserId)
         {
-            var filter = filterBuilder.Eq(address => address.AccountId, accountId);
+            var filter = filterBuilder.Eq(address => address.UserId, UserId);
             return await addressCollection.DeleteManyAsync(filter);
         }
     }

@@ -2,7 +2,6 @@
 using PinoyMassageService.Entities;
 using PinoyMassageService.Extensions;
 using PinoyMassageService.Repositories;
-using static PinoyMassageService.Dtos.AddressDtos;
 using static PinoyMassageService.Dtos.ProfileImageDtos;
 
 namespace PinoyMassageService.Controllers
@@ -24,13 +23,13 @@ namespace PinoyMassageService.Controllers
         public async Task<ActionResult<ProfileImageDto>> CreateProfileImageAsync(CreateProfileImageDto profileImageDto)
         {
             // we only allow one profile image for now reason very low budget for this project
-            var foundProfileImage = await repository.GetProfileImageByAccountIdAsync(profileImageDto.AccountId);
+            var foundProfileImage = await repository.GetProfileImageByUserIdAsync(profileImageDto.UserId);
             if (foundProfileImage is null)
             {
                 ProfileImage profileImage = new()
                 {
                     Id = Guid.NewGuid(),
-                    AccountId = profileImageDto.AccountId,
+                    userId = profileImageDto.UserId,
                     Image = profileImageDto.Image,                    
                     Description = profileImageDto.Description,
                     CreatedDate = DateTimeOffset.UtcNow
@@ -55,10 +54,10 @@ namespace PinoyMassageService.Controllers
         }
 
         // GET /ProfileImage/{id}
-        [HttpGet("{accountId}")]
-        public async Task<ActionResult<ProfileImageDto>> GetProfileImageByAccountIdAsync(Guid accountId)
+        [HttpGet("{userId}")]
+        public async Task<ActionResult<ProfileImageDto>> GetProfileImageByUserIdAsync(Guid userId)
         {
-            var profileImage = await repository.GetProfileImageByAccountIdAsync(accountId);
+            var profileImage = await repository.GetProfileImageByUserIdAsync(userId);
             if (profileImage is null)
             {
                 return NotFound();
@@ -93,10 +92,10 @@ namespace PinoyMassageService.Controllers
             return NoContent();
         }
 
-        [HttpPut("{accountId}")]
-        public async Task<ActionResult> UpdateProfileImageByAccountIdAsync(Guid accountId, UpdateProfileImageDto profileImageDto)
+        [HttpPut("{userId}")]
+        public async Task<ActionResult> UpdateProfileImageByUserIdAsync(Guid userId, UpdateProfileImageDto profileImageDto)
         {
-            var existingProfileImage = await repository.GetProfileImageByAccountIdAsync(accountId);
+            var existingProfileImage = await repository.GetProfileImageByUserIdAsync(userId);
             if (existingProfileImage is null)
             {
                 return NotFound();
@@ -123,23 +122,23 @@ namespace PinoyMassageService.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{accountId}")]
-        public async Task<ActionResult> DeleteProfileImageByAccountIdAsync(Guid accountId)
+        [HttpDelete("{userId}")]
+        public async Task<ActionResult> DeleteProfileImageByUserIdAsync(Guid userId)
         {
-            var existingProfileImage = await repository.GetProfileImageByAccountIdAsync(accountId);
+            var existingProfileImage = await repository.GetProfileImageByUserIdAsync(userId);
             if (existingProfileImage is null)
             {
                 return NotFound();
             }
 
-            await repository.DeleteProfileImageByAccountIdAsync(accountId);
+            await repository.DeleteProfileImageByUserIdAsync(userId);
             return NoContent();
         }
 
-        [HttpDelete("{accountId}")]
-        public async Task<ActionResult> DeleteAllProfileImageByAccountIdAsync(Guid accountId)
+        [HttpDelete("{userId}")]
+        public async Task<ActionResult> DeleteAllProfileImageByUserIdAsync(Guid userId)
         {
-            var deleteResult = await repository.DeleteAllProfileImageByAccountIdAsync(accountId);
+            var deleteResult = await repository.DeleteAllProfileImageByUserIdAsync(userId);
             if (deleteResult.DeletedCount == 0)
             {
                 return NotFound();

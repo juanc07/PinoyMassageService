@@ -3,8 +3,6 @@ using PinoyMassageService.Constant;
 using PinoyMassageService.Entities;
 using PinoyMassageService.Extensions;
 using PinoyMassageService.Repositories;
-using static PinoyMassageService.Dtos.AccountDtos;
-using static PinoyMassageService.Dtos.ProfileImageDtos;
 using static PinoyMassageService.Dtos.ServiceDtos;
 
 namespace PinoyMassageService.Controllers

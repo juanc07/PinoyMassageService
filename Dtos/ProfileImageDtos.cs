@@ -4,9 +4,9 @@ namespace PinoyMassageService.Dtos
 {
     public class ProfileImageDtos
     {
-        public record ProfileImageDto(Guid Id, Guid AccountId, byte[] Image,string Description, DateTimeOffset CreatedDate);
+        public record ProfileImageDto(Guid Id, Guid UserId, byte[] Image,string Description, DateTimeOffset CreatedDate);
 
-        public record CreateProfileImageDto([Required] Guid AccountId,byte[] Image, string Description, DateTimeOffset CreatedDate);
+        public record CreateProfileImageDto([Required] Guid UserId,byte[] Image, string Description, DateTimeOffset CreatedDate);
 
         public record UpdateProfileImageDto(byte[] Image, string Description);
     }

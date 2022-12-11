@@ -29,9 +29,9 @@ namespace PinoyMassageService.Repositories
             return await profileImageCollection.Find(filter).FirstOrDefaultAsync();
         }
 
-        public async Task<ProfileImage> GetProfileImageByAccountIdAsync(Guid accountId)
+        public async Task<ProfileImage> GetProfileImageByUserIdAsync(Guid userId)
         {
-            var filter = filterBuilder.Eq(profileImage => profileImage.AccountId, accountId);
+            var filter = filterBuilder.Eq(profileImage => profileImage.userId, userId);
             return await profileImageCollection.Find(filter).FirstOrDefaultAsync();
         }
 
@@ -43,7 +43,7 @@ namespace PinoyMassageService.Repositories
 
         public async Task UpdateProfileImageAsync(ProfileImage profileImage)
         {
-            var filter = filterBuilder.Eq(existingprofileImage => existingprofileImage.AccountId, profileImage.AccountId);
+            var filter = filterBuilder.Eq(existingprofileImage => existingprofileImage.userId, profileImage.userId);
             await profileImageCollection.ReplaceOneAsync(filter, profileImage);
         }
 
@@ -53,15 +53,15 @@ namespace PinoyMassageService.Repositories
             await profileImageCollection.DeleteOneAsync(filter);
         }
 
-        public async Task DeleteProfileImageByAccountIdAsync(Guid accountId)
+        public async Task DeleteProfileImageByUserIdAsync(Guid UserId)
         {
-            var filter = filterBuilder.Eq(profileImage => profileImage.AccountId, accountId);
+            var filter = filterBuilder.Eq(profileImage => profileImage.userId, UserId);
             await profileImageCollection.DeleteOneAsync(filter);
         }
 
-        public async Task<DeleteResult> DeleteAllProfileImageByAccountIdAsync(Guid accountId)
+        public async Task<DeleteResult> DeleteAllProfileImageByUserIdAsync(Guid UserId)
         {
-            var filter = filterBuilder.Eq(profileImage => profileImage.AccountId, accountId);
+            var filter = filterBuilder.Eq(profileImage => profileImage.userId, UserId);
             return await profileImageCollection.DeleteManyAsync(filter);
         }        
     }

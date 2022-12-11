@@ -7,7 +7,7 @@ namespace PinoyMassageService.Extensions
     {
         public static AddressDto AsDto(this Address address)
         {
-            return new AddressDto(address.Id, address.AccountId, address.StreetNumber, address.Branggay, address.City,
+            return new AddressDto(address.Id, address.UserId, address.StreetNumber, address.Branggay, address.City,
                 address.Country, address.ZipCode, address.CreatedDate);
         }        
     }

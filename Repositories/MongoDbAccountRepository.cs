@@ -28,6 +28,12 @@ namespace PinoyMassageService.Repositories
             return await accountsCollection.Find(filter).FirstOrDefaultAsync();
         }
 
+        public async Task<Account> GetAccountByUserIdAsync(Guid userId)
+        {
+            var filter = filterBuilder.Eq(account => account.UserId, userId);
+            return await accountsCollection.Find(filter).FirstOrDefaultAsync();
+        }
+
         public async Task<Account> GetAccountByUserNameAsync(string username)
         {
             var filter = filterBuilder.Eq(account => account.UserName, username);
@@ -66,6 +72,12 @@ namespace PinoyMassageService.Repositories
         public async Task DeleteAccountAsync(Guid id)
         {
             var filter = filterBuilder.Eq(account => account.Id, id);
+            await accountsCollection.DeleteOneAsync(filter);
+        }
+
+        public async Task DeleteAccountByUserIdAsync(Guid userId)
+        {
+            var filter = filterBuilder.Eq(account => account.UserId, userId);
             await accountsCollection.DeleteOneAsync(filter);
         }
     }

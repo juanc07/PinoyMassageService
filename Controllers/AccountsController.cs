@@ -21,24 +21,31 @@ namespace PinoyMassageService.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<AccountDto>> CreateAccountAsync(CreateAccountDto itemDto)
+        public async Task<ActionResult<AccountDto>> CreateAccountAsync(CreateAccountDto accountDto)
         {
-            Account account = new()
+            // make sure account does not exists before creating it
+            var foundAccount = await repository.GetAccountByUserIdAsync(accountDto.UserId);
+            if (foundAccount is null)
             {
-                Id = Guid.NewGuid(),
-                UserName = itemDto.UserName,
-                Password = itemDto.Password,
-                Email = itemDto.Email,
-                MobileNumber = itemDto.MobileNumber,
-                AccountType = itemDto.AccountType,
-                HandleName = itemDto.HandleName,
-                BirthDate = itemDto.BirthDate,
-                Gender = itemDto.Gender,
-                CreatedDate = DateTimeOffset.UtcNow
-            };
+                Account account = new()
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = accountDto.UserId,
+                    UserName = accountDto.UserName,
+                    Password = accountDto.Password,
+                    Email = accountDto.Email,
+                    MobileNumber = accountDto.MobileNumber,
+                    AccountType = accountDto.AccountType,
+                    HandleName = accountDto.HandleName,
+                    BirthDate = accountDto.BirthDate,
+                    Gender = accountDto.Gender,
+                    CreatedDate = DateTimeOffset.UtcNow
+                };
 
-            await repository.CreateAccountAsync(account);
-            return CreatedAtAction(nameof(GetAccountAsync), new { id = account.Id }, account.AsDto());
+                await repository.CreateAccountAsync(account);
+                return CreatedAtAction(nameof(GetAccountAsync), new { id = account.Id }, account.AsDto());
+            }
+            return BadRequest("Account already exists!");
         }
 
         // GET /accounts/{id}
@@ -46,6 +53,17 @@ namespace PinoyMassageService.Controllers
         public async Task<ActionResult<AccountDto>> GetAccountAsync(Guid id)
         {
             var account = await repository.GetAccountAsync(id);
+            if (account is null)
+            {
+                return NotFound();
+            }
+            return account.AsDto();
+        }
+
+        [HttpGet("{userId}")]
+        public async Task<ActionResult<AccountDto>> GetAccountByUserIdAsync(Guid userId)
+        {
+            var account = await repository.GetAccountByUserIdAsync(userId);
             if (account is null)
             {
                 return NotFound();
@@ -244,6 +262,19 @@ namespace PinoyMassageService.Controllers
             }
 
             await repository.DeleteAccountAsync(id);
+            return NoContent();
+        }
+
+        [HttpDelete("{userId}")]
+        public async Task<ActionResult> DeleteAccountByUserIdAsync(Guid userId)
+        {
+            var existingAccount = await repository.GetAccountByUserIdAsync(userId);
+            if (existingAccount is null)
+            {
+                return NotFound();
+            }
+
+            await repository.DeleteAccountByUserIdAsync(userId);
             return NoContent();
         }
     }
