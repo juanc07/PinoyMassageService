@@ -30,9 +30,7 @@ namespace PinoyMassageService.Controllers
                 Account account = new()
                 {
                     Id = Guid.NewGuid(),
-                    UserId = accountDto.UserId,
-                    UserName = accountDto.UserName,
-                    Password = accountDto.Password,
+                    UserId = accountDto.UserId,                    
                     Email = accountDto.Email,
                     MobileNumber = accountDto.MobileNumber,
                     AccountType = accountDto.AccountType,
@@ -81,19 +79,7 @@ namespace PinoyMassageService.Controllers
                 return NotFound();
             }
             return account.AsDto();
-        }
-
-        // GET /accounts/{username}
-        [HttpGet("{username}")]
-        public async Task<ActionResult<AccountDto>> GetAccountByUserNameAsync(string username)
-        {
-            var account = await repository.GetAccountByUserNameAsync(username);
-            if (account is null)
-            {
-                return NotFound();
-            }
-            return account.AsDto();
-        }
+        }        
 
         // GET /accounts/{mobilenumber}
         [HttpGet("{mobilenumber}")]
@@ -117,22 +103,7 @@ namespace PinoyMassageService.Controllers
                 return NotFound();
             }
             return account.AsDto();
-        }
-
-        // Gets /accounts        
-        [HttpGet]
-        public async Task<IEnumerable<AccountDto>> GetAccountsByUserNameAsync(string userName = null)
-        {
-            var accounts = (await repository.GetAccountsAsync()).Select(account => account.AsDto());
-
-            if (!string.IsNullOrWhiteSpace(userName))
-            {
-                accounts = accounts.Where(account => account.UserName.Equals(userName, StringComparison.OrdinalIgnoreCase));
-            }
-
-            logger.LogInformation($"{DateTime.UtcNow.ToString("hh:mm:ss")}: Retrieved {accounts.Count()} accounts");
-            return accounts;
-        }
+        }        
 
         // Gets /accounts        
         [HttpGet]
@@ -177,31 +148,14 @@ namespace PinoyMassageService.Controllers
 
             existingAccount.FirstName = accountDto.FirstName;
             existingAccount.LastName = accountDto.LastName;
-            existingAccount.HandleName = accountDto.HandleName;
-            existingAccount.Password = accountDto.Password;
+            existingAccount.HandleName = accountDto.HandleName;            
             existingAccount.MobileNumber = accountDto.MobileNumber;
             existingAccount.IdentificationType = accountDto.IdentificationType;
             existingAccount.IdentificationNumber = accountDto.IdentificationNumber;
 
             await repository.UpdateAccountAsync(existingAccount);
             return NoContent();
-        }
-
-        // PUT /accounts/id        
-        [HttpPut("{id}")]        
-        public async Task<ActionResult> UpdatePasswordAsync(Guid id, UpdatePasswordDto UpdatePasswordDto)
-        {
-            var existingAccount = await repository.GetAccountAsync(id);
-            if (existingAccount is null)
-            {
-                return NotFound();
-            }
-
-            existingAccount.Password = UpdatePasswordDto.Password;            
-
-            await repository.UpdateAccountAsync(existingAccount);
-            return NoContent();
-        }
+        }        
 
         // PUT /accounts/id        
         [HttpPut("{id}")]
