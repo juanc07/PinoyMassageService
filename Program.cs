@@ -33,6 +33,7 @@ builder.Services.AddSingleton<IAddressRepository, MongoDbAddressRepository>();
 builder.Services.AddSingleton<IProfileImageRepository, MongoDbProfileImageRepository>();
 builder.Services.AddSingleton<IServiceRepository, MongoDbServiceRepository>();
 builder.Services.AddSingleton<IUserRepository, MongoDbUserRepository>();
+builder.Services.AddSingleton<IRefreshTokenRepository, MongoDbRefreshTokenRepository>();
 
 builder.Services.AddControllers(options =>
 {

@@ -39,6 +39,17 @@ namespace PinoyMassageService.Repositories
             var filter = filterBuilder.Eq(user => user.Username, username);
             return await usersCollection.Find(filter).FirstOrDefaultAsync();
         }
+        public async Task<User> GetUserByEmailAsync(string email)
+        {
+            var filter = filterBuilder.Eq(user => user.Email, email);
+            return await usersCollection.Find(filter).FirstOrDefaultAsync();
+        }
+
+        public async Task<User> GetUserByMobileNumberAsync(string mobilenumber)
+        {
+            var filter = filterBuilder.Eq(user => user.MobileNumber, mobilenumber);
+            return await usersCollection.Find(filter).FirstOrDefaultAsync();
+        }
 
         public async Task<IEnumerable<User>> GetUsersAsync()
         {

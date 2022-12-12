@@ -6,25 +6,14 @@ namespace PinoyMassageService.Entities
     {
         // account base
         public Guid Id { get; set; }
-        public Guid UserId { get; set; }        
-        public string Email { get; set; }        
-        public int AccountType { get; set; }
-        public DateTimeOffset BirthDate { get; set; }
-        public int Gender { get; set; }
-        public DateTimeOffset CreatedDate { get; set; }
-
-        // basic info
+        public Guid UserId { get; set; }                
         public string HandleName { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-
-        // extra info                
-        [DataType(DataType.PhoneNumber)]
-        public string MobileNumber { get; set; }        
-        public string FacebookId { get; set; }
+        public int Gender { get; set; }
+        public DateTimeOffset BirthDate { get; set; }
         public int Age { get; set; }
         public Address? Address { get; set; }
-
 
         // identification info
         public string IdentificationType { get; set; }
@@ -32,5 +21,7 @@ namespace PinoyMassageService.Entities
 
         // if identification is verified or not
         public bool IsVerified { get; set; }
+
+        public DateTimeOffset CreatedDate { get; set; }
     }
 }

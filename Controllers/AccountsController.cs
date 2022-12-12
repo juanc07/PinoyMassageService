@@ -31,12 +31,6 @@ namespace PinoyMassageService.Controllers
                 {
                     Id = Guid.NewGuid(),
                     UserId = accountDto.UserId,                    
-                    Email = accountDto.Email,
-                    MobileNumber = accountDto.MobileNumber,
-                    AccountType = accountDto.AccountType,
-                    HandleName = accountDto.HandleName,
-                    BirthDate = accountDto.BirthDate,
-                    Gender = accountDto.Gender,
                     CreatedDate = DateTimeOffset.UtcNow
                 };
 
@@ -67,31 +61,7 @@ namespace PinoyMassageService.Controllers
                 return NotFound();
             }
             return account.AsDto();
-        }
-
-        // GET /accounts/{email}
-        [HttpGet("{email}")]
-        public async Task<ActionResult<AccountDto>> GetAccountByEmailAsync(string email)
-        {
-            var account = await repository.GetAccountByEmailAsync(email);
-            if (account is null)
-            {
-                return NotFound();
-            }
-            return account.AsDto();
         }        
-
-        // GET /accounts/{mobilenumber}
-        [HttpGet("{mobilenumber}")]
-        public async Task<ActionResult<AccountDto>> GetAccountByMobileNumberAsync(string mobilenumber)
-        {
-            var account = await repository.GetAccountByMobileNumberAsync(mobilenumber);
-            if (account is null)
-            {
-                return NotFound();
-            }
-            return account.AsDto();
-        }
 
         // GET /accounts/{handle}
         [HttpGet("{handle}")]
@@ -148,46 +118,13 @@ namespace PinoyMassageService.Controllers
 
             existingAccount.FirstName = accountDto.FirstName;
             existingAccount.LastName = accountDto.LastName;
-            existingAccount.HandleName = accountDto.HandleName;            
-            existingAccount.MobileNumber = accountDto.MobileNumber;
+            existingAccount.HandleName = accountDto.HandleName;
             existingAccount.IdentificationType = accountDto.IdentificationType;
             existingAccount.IdentificationNumber = accountDto.IdentificationNumber;
 
             await repository.UpdateAccountAsync(existingAccount);
             return NoContent();
-        }        
-
-        // PUT /accounts/id        
-        [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateMobileNumberAsync(Guid id, UpdateMobileNumberDto UpdateMobileNumberDto)
-        {
-            var existingAccount = await repository.GetAccountAsync(id);
-            if (existingAccount is null)
-            {
-                return NotFound();
-            }
-
-            existingAccount.MobileNumber = UpdateMobileNumberDto.MobileNumber;
-
-            await repository.UpdateAccountAsync(existingAccount);
-            return NoContent();
-        }
-
-        // PUT /accounts/id        
-        [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateEmailAsync(Guid id, UpdateEmailDto updateEmailDto)
-        {
-            var existingAccount = await repository.GetAccountAsync(id);
-            if (existingAccount is null)
-            {
-                return NotFound();
-            }
-
-            existingAccount.Email = updateEmailDto.Email;
-
-            await repository.UpdateAccountAsync(existingAccount);
-            return NoContent();
-        }
+        }                        
 
         // PUT /accounts/id        
         [HttpPut("{id}")]

@@ -7,9 +7,8 @@ namespace PinoyMassageService.Extensions
     {
         public static AccountDto AsDto(this Account account)
         {
-            return new AccountDto(account.Id, account.UserId,account.Email, account.AccountType, account.Gender,
-                account.FirstName, account.LastName, account.HandleName, account.BirthDate, account.Age, account.CreatedDate,
-                account.MobileNumber, account.FacebookId, account.IdentificationType, account.IdentificationNumber, account.IsVerified);
+            return new AccountDto(account.Id, account.UserId,account.FirstName, account.LastName, account.HandleName, account.Gender,
+                account.BirthDate, account.Age,account.IdentificationType, account.IdentificationNumber, account.IsVerified, account.CreatedDate);
         }
     }
 }

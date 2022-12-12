@@ -5,9 +5,7 @@ namespace PinoyMassageService.Repositories
     public interface IAccountRepository
     {
         Task<Account> GetAccountAsync(Guid id);
-        Task<Account> GetAccountByUserIdAsync(Guid userId);        
-        Task<Account> GetAccountByEmailAsync(string email);
-        Task<Account> GetAccountByMobileNumberAsync(string mobilenumber);
+        Task<Account> GetAccountByUserIdAsync(Guid userId);                
         Task<Account> GetAccountByHandleNameAsync(string handlename);
         Task<IEnumerable<Account>> GetAccountsAsync();
         Task CreateAccountAsync(Account account);
