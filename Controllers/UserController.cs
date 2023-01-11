@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using PinoyMassageService.Constant;
 using static PinoyMassageService.Dtos.RefreshTokenDtos;
+using Newtonsoft.Json.Linq;
 
 namespace PinoyMassageService.Controllers
 {
@@ -43,8 +44,10 @@ namespace PinoyMassageService.Controllers
             _logger = logger;
         }
 
+        [HttpGet, Authorize(Roles = UserType.User)]
         //[HttpGet, Authorize(Roles = UserType.Admin)]
-        [HttpGet, Authorize]
+        //[HttpGet, Authorize]
+        //[HttpGet]
         public ActionResult<object> GetMe()
         {
             var userName = _userService.GetMyName();
@@ -91,18 +94,22 @@ namespace PinoyMassageService.Controllers
 
         [HttpPost("registerExternal")]
         public async Task<ActionResult<AccountDto>> Register(CreateUserExternalDto userDto)
-        {
+        {            
             var foundUser = await _repository.GetUserByUserNameAsync(userDto.Email);
             if (foundUser == null)
-            {
+            {               
+
                 User user = new()
                 {
                     Id = Guid.NewGuid(),
                     Username = userDto.Email,
-                    Email = userDto.Email,                    
+                    MobileNumber = userDto.MobileNumber,
+                    Email = userDto.Email,
+                    DisplayName = userDto.DisplayName,
+                    FirebaseId = userDto.FirebaseId,
                     AccountType = userDto.AccountType,                    
                     FacebookId= userDto.FacebookId,
-                    GoogleId  = userDto.GoogleId,   
+                    GoogleId  = userDto.GoogleId,
                     CreatedDate = DateTime.UtcNow                    
                 };
 
@@ -118,9 +125,26 @@ namespace PinoyMassageService.Controllers
                     CreatedDate = DateTime.UtcNow
                 } );
 
-                return CreatedAtAction(nameof(GetUserAsync), new { id = user.Id }, user.AsDto());
+                var dto = user.AsDto();
+              var SuccessResponse = new Response
+                {
+                    Status = ApiResponseType.Success,
+                    Message = "User created successfully.",
+                    Data = dto
+                };
+                return CreatedAtAction(nameof(GetUserAsync), new { id = user.Id }, SuccessResponse);
+
+                //return CreatedAtAction(nameof(GetUserAsync), new { id = user.Id }, user.AsDto());
             }
-            return BadRequest("FB or Google user already exists!");
+
+           var failedResponse = new Response
+            {
+                Status = ApiResponseType.Failed,
+                Message = "FB or Google user already exists!",
+                Data = new JObject()
+           };
+            return Ok(failedResponse);
+            //return BadRequest(response);
         }
 
         // GET /accounts/{id}

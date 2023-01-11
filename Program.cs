@@ -6,6 +6,7 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using PinoyMassageService.Controllers.Services;
+using PinoyMassageService.Extensions;
 using PinoyMassageService.Repositories;
 using PinoyMassageService.Settings;
 using Swashbuckle.AspNetCore.Filters;
@@ -91,6 +92,26 @@ app.UseEndpoints(endpoints =>
     //endpoints.MapControllers();    
     endpoints.MapGet("/hello", () => "Hello!");
     endpoints.MapGet("/hi", () => "Hi!");
+    endpoints.MapGet("/TestTimeStamp", () => 
+        {             
+            DateTimeOffset now = DateTimeOffset.Now;
+
+            long unixTimeStamp = now.ToUnixTimeSeconds();
+            Debug.WriteLine($"TimeStampToData: {unixTimeStamp}");
+
+            DateTimeOffset converted = DateTimeOffset.FromUnixTimeSeconds(unixTimeStamp);            
+            Debug.WriteLine($"TimeStampToDateTimeOffset: {converted}");
+
+            Debug.WriteLine( $"ToLocalTime: {now.ToLocalTime()}");
+            Debug.WriteLine($"ToUniversalTime: {now.ToUniversalTime()}");
+            Debug.WriteLine($"ToFormatDataTime: {now.ToString("yyyy-MM-ddTHH:mm:ss")}");
+
+
+
+            //double dateNowTimeStampOffset = DateTimeOffset.FromUnixTimeSeconds()
+            return converted;
+        }
+    );
     endpoints.MapGet("/image", () =>
     {
         byte[] binaryContent = File.ReadAllBytes("D:\\2022\\gigs\\pinoy-massage-app\\images\\smiley.png");

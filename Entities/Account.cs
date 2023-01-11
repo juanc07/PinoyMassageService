@@ -11,7 +11,7 @@ namespace PinoyMassageService.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public int Gender { get; set; }
-        public DateTimeOffset BirthDate { get; set; }
+        public long BirthDate { get; set; }
         public int Age { get; set; }
         public Address? Address { get; set; }
 
