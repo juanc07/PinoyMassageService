@@ -14,7 +14,7 @@ namespace PinoyMassageService.Dtos
             string FirstName, string LastName, int Gender, long BirthDate);
         public record CreateAdminDto([Required] string UserName, [Required] string Password);
         public record LoginUserDto([Required] string UserName, [Required] string Password);
-        public record LoginUserExternalDto([Required] string UserName, [Required] string accessTokenFromExternal);
+        public record LoginUserExternalDto([Required] string UserName, [Required] string idTokenFromExternal);
         public record UpdatePasswordDto([Required]  string Password);        
 
         // contact info

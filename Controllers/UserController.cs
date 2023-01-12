@@ -13,10 +13,13 @@ using System.IdentityModel.Tokens.Jwt;
 using PinoyMassageService.Constant;
 using static PinoyMassageService.Dtos.RefreshTokenDtos;
 using Newtonsoft.Json.Linq;
+using Google.Apis.Auth.OAuth2;
+using PinoyMassageService.Helpers;
+using FirebaseAdmin.Auth;
 
 namespace PinoyMassageService.Controllers
 {
-    [ApiController]    
+    [ApiController]
     [Route("[controller]/[action]")]
     public class UserController : Controller
     {
@@ -31,9 +34,9 @@ namespace PinoyMassageService.Controllers
 
 
         public UserController(
-            IConfiguration configuration,IUserService userService,
-            IUserRepository repository,IAccountRepository accountRepository,
-            IRefreshTokenRepository refreshTokenRepository,ILogger<UserController> logger
+            IConfiguration configuration, IUserService userService,
+            IUserRepository repository, IAccountRepository accountRepository,
+            IRefreshTokenRepository refreshTokenRepository, ILogger<UserController> logger
             )
         {
             _configuration = configuration;
@@ -56,13 +59,13 @@ namespace PinoyMassageService.Controllers
 
             return Ok(new { userName, role, nameIdentitifier });
         }
-       
+
 
         [HttpPost("register")]
         public async Task<ActionResult<AccountDto>> Register(CreateUserDto userDto)
         {
             var foundUser = await _repository.GetUserByUserNameAsync(userDto.Email);
-            if(foundUser == null)
+            if (foundUser == null)
             {
                 CreatePasswordHash(userDto.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
@@ -76,7 +79,7 @@ namespace PinoyMassageService.Controllers
                     PasswordSalt = passwordSalt,
                     AccountType = userDto.AccountType,
                     MobileNumber = userDto.MobileNumber,
-                    CreatedDate = DateTime.UtcNow                    
+                    CreatedDate = DateTime.UtcNow
                 };
 
                 await _repository.CreateUserAsync(user);
@@ -84,7 +87,7 @@ namespace PinoyMassageService.Controllers
                 {
                     Id = Guid.NewGuid(),
                     UserId = user.Id,
-                    CreatedDate = DateTime.UtcNow                    
+                    CreatedDate = DateTime.UtcNow
                 });
 
                 return CreatedAtAction(nameof(GetUserAsync), new { id = user.Id }, user.AsDto());
@@ -92,12 +95,13 @@ namespace PinoyMassageService.Controllers
             return BadRequest("User already exists!");
         }
 
-        [HttpPost("registerExternal")]
+        /*[HttpPost("registerExternal")]
         public async Task<ActionResult<AccountDto>> Register(CreateUserExternalDto userDto)
-        {            
+        {
             var foundUser = await _repository.GetUserByUserNameAsync(userDto.Email);
+            Response? response = null;
             if (foundUser == null)
-            {               
+            {
 
                 User user = new()
                 {
@@ -107,45 +111,94 @@ namespace PinoyMassageService.Controllers
                     Email = userDto.Email,
                     DisplayName = userDto.DisplayName,
                     FirebaseId = userDto.FirebaseId,
-                    AccountType = userDto.AccountType,                    
-                    FacebookId= userDto.FacebookId,
-                    GoogleId  = userDto.GoogleId,
-                    CreatedDate = DateTime.UtcNow                    
+                    AccountType = userDto.AccountType,
+                    FacebookId = userDto.FacebookId,
+                    GoogleId = userDto.GoogleId,
+                    CreatedDate = DateTime.UtcNow
                 };
 
                 await _repository.CreateUserAsync(user);
-                await _accountRepository.CreateAccountAsync( new Account
+                await _accountRepository.CreateAccountAsync(new Account
                 {
                     Id = Guid.NewGuid(),
                     UserId = user.Id,
                     FirstName = userDto.FirstName,
                     LastName = userDto.LastName,
-                    BirthDate= userDto.BirthDate,
+                    BirthDate = userDto.BirthDate,
                     Gender = userDto.Gender,
                     CreatedDate = DateTime.UtcNow
-                } );
+                });
 
                 var dto = user.AsDto();
-              var SuccessResponse = new Response
+                response = new Response
                 {
                     Status = ApiResponseType.Success,
                     Message = "User created successfully.",
                     Data = dto
                 };
-                return CreatedAtAction(nameof(GetUserAsync), new { id = user.Id }, SuccessResponse);
-
+                return CreatedAtAction(nameof(GetUserAsync), new { id = user.Id }, response);
                 //return CreatedAtAction(nameof(GetUserAsync), new { id = user.Id }, user.AsDto());
             }
 
-           var failedResponse = new Response
+            response = new Response
             {
                 Status = ApiResponseType.Failed,
                 Message = "FB or Google user already exists!",
                 Data = new JObject()
-           };
-            return Ok(failedResponse);
+            };
+            return Ok(response);
             //return BadRequest(response);
+        }*/
+
+        [HttpPost("registerExternal")]
+        public async Task<IActionResult> Register(CreateUserExternalDto userDto)
+        {
+            var foundUser = await _repository.GetUserByUserNameAsync(userDto.Email);
+            if (foundUser != null)
+            {
+                return Conflict(new Response
+                {
+                    Status = ApiResponseType.Failed,
+                    Message = "User with this email already exists.",
+                    Data = new JObject()
+                });
+            }
+
+            User user = new User
+            {
+                Id = Guid.NewGuid(),
+                Username = userDto.Email,
+                MobileNumber = userDto.MobileNumber,
+                Email = userDto.Email,
+                DisplayName = userDto.DisplayName,
+                FirebaseId = userDto.FirebaseId,
+                AccountType = userDto.AccountType,
+                FacebookId = userDto.FacebookId,
+                GoogleId = userDto.GoogleId,
+                CreatedDate = DateTime.UtcNow
+            };
+
+            await _repository.CreateUserAsync(user);
+            await _accountRepository.CreateAccountAsync(new Account
+            {
+                Id = Guid.NewGuid(),
+                UserId = user.Id,
+                FirstName = userDto.FirstName,
+                LastName = userDto.LastName,
+                BirthDate = userDto.BirthDate,
+                Gender = userDto.Gender,
+                CreatedDate = DateTime.UtcNow
+            });
+
+            var dto = user.AsDto();
+            return CreatedAtAction(nameof(GetUserAsync), new { id = user.Id }, new Response
+            {
+                Status = ApiResponseType.Success,
+                Message = "User created successfully.",
+                Data = dto
+            });
         }
+
 
         // GET /accounts/{id}
         [HttpGet("{id}")]
@@ -164,7 +217,7 @@ namespace PinoyMassageService.Controllers
         {
             var user = await _repository.GetUserByUserNameAsync(userDto.UserName);
 
-            if(user != null)
+            if (user != null)
             {
                 if (!user.Username.Equals(userDto.UserName, StringComparison.Ordinal))
                 {
@@ -188,7 +241,16 @@ namespace PinoyMassageService.Controllers
                 // save the refresh token info on db
                 await UpdateRefreshTokenAsync(user, refreshToken);
 
-                return Ok(token);
+
+                JObject jsonObject = new JObject();
+                jsonObject["token"] = token;
+
+                return Ok(new Response
+                {
+                    Status = ApiResponseType.Success,
+                    Message = "login successfull.",
+                    Data = jsonObject
+                });
             }
             return BadRequest("User not found");
         }
@@ -196,15 +258,53 @@ namespace PinoyMassageService.Controllers
         [HttpPost("loginExternal")]
         public async Task<ActionResult<string>> Login(LoginUserExternalDto userDto)
         {
+            string uid = null;
+            try
+            {
+                uid = await FirebaseAuthService.Instance.GetUserUid(userDto.idTokenFromExternal);
+                if (string.IsNullOrWhiteSpace(uid))
+                {
+                    return Unauthorized(new Response
+                    {
+                        Status = ApiResponseType.Failed,
+                        Message = "Invalid id token",
+                        Data = new JObject()
+                    });
+                }
+            }
+            catch (FirebaseAuthException ex)
+            {                
+                return BadRequest(new Response
+                {
+                    Status = ApiResponseType.Failed,
+                    Message = "Failed to verify id token.",
+                    Data = new JObject()
+                });
+            }
+
             var user = await _repository.GetUserByUserNameAsync(userDto.UserName);
 
-            if (user != null)
+            if (user == null)
             {
-                if (!user.Username.Equals(userDto.UserName, StringComparison.Ordinal))
+                return BadRequest(new Response
                 {
-                    return BadRequest("User not found");
-                }                
+                    Status = ApiResponseType.Failed,
+                    Message = $"User with username {userDto.UserName} not found.",
+                    Data = new JObject()
+                });
+            }
 
+            if (!user.Username.Equals(userDto.UserName, StringComparison.Ordinal))
+            {
+                return BadRequest(new Response
+                {
+                    Status = ApiResponseType.Failed,
+                    Message = $"User with username {userDto.UserName} not found.",
+                    Data = new JObject()
+                });
+            }
+            else
+            {
                 // not sure yet what to do with external access key 
                 // save it probably to access fb data info of user?
 
@@ -220,9 +320,16 @@ namespace PinoyMassageService.Controllers
                 // save the refresh token info on db
                 await UpdateRefreshTokenAsync(user, refreshToken);
 
-                return Ok(token);
+                JObject jsonObject = new JObject();
+                jsonObject["token"] = token;
+
+                return Ok(new Response
+                {
+                    Status = ApiResponseType.Success,
+                    Message = "login successfull.",
+                    Data = jsonObject
+                });
             }
-            return BadRequest("User not found");
         }
 
         // this will be called when the user opens the app, if user receive UnAuthorized meaning the user needs to login again
@@ -235,7 +342,7 @@ namespace PinoyMassageService.Controllers
             // get the user info from db
             var existingRefreshToken = await _refreshTokenRepository.GetRefreshTokenByUserIdAsync(userId);
 
-            if (existingRefreshToken!=null)
+            if (existingRefreshToken != null)
             {
                 if (!existingRefreshToken.Token.Equals(refreshTokenDto.Token))
                 {
@@ -268,7 +375,7 @@ namespace PinoyMassageService.Controllers
             else
             {
                 return Unauthorized("Refresh Token Not found.");
-            }                        
+            }
         }
 
         private RefreshToken GenerateRefreshToken()
@@ -281,7 +388,7 @@ namespace PinoyMassageService.Controllers
             };
 
             return refreshToken;
-        }        
+        }
 
         private string CreateToken(User user)
         {
