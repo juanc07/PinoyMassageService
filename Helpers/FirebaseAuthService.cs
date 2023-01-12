@@ -4,6 +4,7 @@
     using FirebaseAdmin.Auth;
     using Google.Apis.Auth;
     using Google.Apis.Auth.OAuth2;
+    using Newtonsoft.Json.Linq;
 
     public sealed class FirebaseAuthService
     {
@@ -33,7 +34,8 @@
             }
             catch (FirebaseAuthException ex)
             {
-                throw new Exception(ex.Message);
+                //throw new Exception(ex.Message);
+                return null;
             }
         }
     }
