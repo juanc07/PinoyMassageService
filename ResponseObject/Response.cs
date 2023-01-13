@@ -1,4 +1,4 @@
-﻿namespace PinoyMassageService.Controllers
+﻿namespace PinoyMassageService.ResponseObject
 {
     public class Response
     {

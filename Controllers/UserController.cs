@@ -16,6 +16,9 @@ using Newtonsoft.Json.Linq;
 using Google.Apis.Auth.OAuth2;
 using PinoyMassageService.Helpers;
 using FirebaseAdmin.Auth;
+using PinoyMassageService.ResponseObject;
+using System.Text.Json.Nodes;
+using Microsoft.Extensions.Logging;
 
 namespace PinoyMassageService.Controllers
 {
@@ -47,7 +50,7 @@ namespace PinoyMassageService.Controllers
             _logger = logger;
         }
 
-        [HttpGet, Authorize(Roles = UserType.User)]
+        [HttpGet, Authorize(Roles = RoleType.User)]
         //[HttpGet, Authorize(Roles = UserType.Admin)]
         //[HttpGet, Authorize]
         //[HttpGet]
@@ -258,27 +261,38 @@ namespace PinoyMassageService.Controllers
         [HttpPost("loginExternal")]
         public async Task<ActionResult<string>> Login(LoginUserExternalDto userDto)
         {
+            _logger.LogInformation($"UserControler: {DateTime.UtcNow.ToString("hh:mm:ss")} call loginExternal!");
             string uid = null;
             try
             {
-                uid = await FirebaseAuthService.Instance.GetUserUid(userDto.idTokenFromExternal);
+                uid = await FirebaseAuthService.Instance.GetUserUid(userDto.idTokenFromExternal, _logger);
                 if (string.IsNullOrWhiteSpace(uid))
                 {
+                    _logger.LogInformation($"UserControler: {DateTime.UtcNow.ToString("hh:mm:ss")} is null or empty Guid: {uid}");
                     return Unauthorized(new Response
                     {
                         Status = ApiResponseType.Failed,
                         Message = "Invalid id token",
-                        Data = new JObject()
+                        Data = new Token
+                        {
+                            Value = "",
+                            RoleType=RoleType.User.ToString()
+                        }
                     });
                 }
             }
             catch (FirebaseAuthException ex)
-            {                
+            {
+                _logger.LogInformation($"UserControler: {DateTime.UtcNow.ToString("hh:mm:ss")} FirebaseAuthException ex: {ex.Message}");
                 return BadRequest(new Response
                 {
                     Status = ApiResponseType.Failed,
                     Message = "Failed to verify id token.",
-                    Data = new JObject()
+                    Data = new Token
+                    {
+                        Value = "",
+                        RoleType = RoleType.User.ToString()
+                    }
                 });
             }
 
@@ -286,21 +300,31 @@ namespace PinoyMassageService.Controllers
 
             if (user == null)
             {
-                return BadRequest(new Response
+                _logger.LogInformation($"UserControler: {DateTime.UtcNow.ToString("hh:mm:ss")} user not found 1st!");
+                return NotFound(new Response
                 {
                     Status = ApiResponseType.Failed,
                     Message = $"User with username {userDto.UserName} not found.",
-                    Data = new JObject()
+                    Data = new Token
+                    {
+                        Value = "",
+                        RoleType = RoleType.User.ToString()
+                    }
                 });
             }
 
             if (!user.Username.Equals(userDto.UserName, StringComparison.Ordinal))
             {
-                return BadRequest(new Response
+                _logger.LogInformation($"UserControler: {DateTime.UtcNow.ToString("hh:mm:ss")} user not found 2nd !");
+                return NotFound(new Response
                 {
                     Status = ApiResponseType.Failed,
                     Message = $"User with username {userDto.UserName} not found.",
-                    Data = new JObject()
+                    Data = new Token
+                    {
+                        Value = "",
+                        RoleType = RoleType.User.ToString()
+                    }
                 });
             }
             else
@@ -320,14 +344,17 @@ namespace PinoyMassageService.Controllers
                 // save the refresh token info on db
                 await UpdateRefreshTokenAsync(user, refreshToken);
 
-                JObject jsonObject = new JObject();
-                jsonObject["token"] = token;
+                _logger.LogInformation($"UserControler: {DateTime.UtcNow.ToString("hh:mm:ss")} got access token: {token}");
 
                 return Ok(new Response
                 {
                     Status = ApiResponseType.Success,
                     Message = "login successfull.",
-                    Data = jsonObject
+                    Data = new Token
+                    {
+                        Value = token,
+                        RoleType = RoleType.User.ToString()
+                    }
                 });
             }
         }
@@ -398,7 +425,7 @@ namespace PinoyMassageService.Controllers
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, UserType.User)
+                new Claim(ClaimTypes.Role, RoleType.User)
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(

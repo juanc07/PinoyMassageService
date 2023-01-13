@@ -4,7 +4,10 @@
     using FirebaseAdmin.Auth;
     using Google.Apis.Auth;
     using Google.Apis.Auth.OAuth2;
+    using Microsoft.Extensions.Logging;
     using Newtonsoft.Json.Linq;
+    using PinoyMassageService.Controllers;
+    using PinoyMassageService.Entities;
 
     public sealed class FirebaseAuthService
     {
@@ -22,7 +25,7 @@
             FirebaseApp.Create(new AppOptions() { Credential = cred });
         }
 
-        public async Task<string> GetUserUid(string idToken)
+        public async Task<string> GetUserUid(string idToken, ILogger<UserController> logger)
         {
             try
             {
@@ -35,6 +38,7 @@
             catch (FirebaseAuthException ex)
             {
                 //throw new Exception(ex.Message);
+                logger.LogInformation($"FirebaseAuthService: {DateTime.UtcNow.ToString("hh:mm:ss")}: GetUserUid message: {ex.Message}");
                 return null;
             }
         }
