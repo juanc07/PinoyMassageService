@@ -185,11 +185,7 @@ namespace PinoyMassageService.Controllers
             await _accountRepository.CreateAccountAsync(new Account
             {
                 Id = Guid.NewGuid(),
-                UserId = user.Id,
-                FirstName = userDto.FirstName,
-                LastName = userDto.LastName,
-                BirthDate = userDto.BirthDate,
-                Gender = userDto.Gender,
+                UserId = user.Id,                
                 CreatedDate = DateTime.UtcNow
             });
 

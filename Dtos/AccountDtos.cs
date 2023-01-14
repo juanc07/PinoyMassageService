@@ -7,7 +7,7 @@ namespace PinoyMassageService.Dtos
     {
         public record AccountDto(Guid Id, Guid UserId,string FirstName, string LastName, string HandleName, int Gender,
             double BirthDate, int Age,string IdentificationType, string IdentificationNumber, bool IsVerified, DateTimeOffset CreatedDate);
-        public record CreateAccountDto([Required] Guid UserId, DateTimeOffset CreatedDate);
+        public record CreateAccountDto(Guid UserId, DateTimeOffset CreatedDate);
 
         // Basic information        
         public record UpdateBasicDto( string FirstName, string LastName, string HandleName);                
