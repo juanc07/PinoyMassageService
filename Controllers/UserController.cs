@@ -292,7 +292,17 @@ namespace PinoyMassageService.Controllers
                 });
             }
 
-            var user = await _repository.GetUserByUserNameAsync(userDto.UserName);
+
+            User? user = null;
+
+            if (!String.IsNullOrEmpty(userDto.UserName))
+            {
+                user = await _repository.GetUserByUserNameAsync(userDto.UserName);
+            }
+            else
+            {
+                user = await _repository.GetUserByMobileNumberAsync(userDto.mobileNumber);
+            }
 
             if (user == null)
             {
@@ -307,52 +317,34 @@ namespace PinoyMassageService.Controllers
                         RoleType = RoleType.User.ToString()
                     }
                 });
-            }
+            }            
 
-            if (!user.Username.Equals(userDto.UserName, StringComparison.Ordinal))
+            // creates token
+            // this token needs to be save in user phone , user can then use it to call api without login
+            // until token is still valid and not expired, if expired we tell the user to login again manually
+            string token = CreateToken(user);
+            // create refresh token
+            var refreshToken = GenerateRefreshToken();
+
+            // the client needs to save the userid and refresh token locally 
+            // we need this to auto login user if the token is still valid , if not needs to login again
+            // validity is 7 days for refresh token
+
+            // save the refresh token info on db
+            await UpdateRefreshTokenAsync(user, refreshToken);
+
+            _logger.LogInformation($"UserControler: {DateTime.UtcNow.ToString("hh:mm:ss")} got access token: {token}");
+
+            return Ok(new Response
             {
-                _logger.LogInformation($"UserControler: {DateTime.UtcNow.ToString("hh:mm:ss")} user not found 2nd !");
-                return NotFound(new Response
+                Status = ApiResponseType.Success,
+                Message = "login successfull.",
+                Data = new Token
                 {
-                    Status = ApiResponseType.Failed,
-                    Message = $"User with username {userDto.UserName} not found.",
-                    Data = new Token
-                    {
-                        Value = "",
-                        RoleType = RoleType.User.ToString()
-                    }
-                });
-            }
-            else
-            {
-                // not sure yet what to do with external access key 
-                // save it probably to access fb data info of user?
-
-                // creates token
-                string token = CreateToken(user);
-                // create refresh token
-                var refreshToken = GenerateRefreshToken();
-
-                // the client needs to save the userid and refresh token locally 
-                // we need this to auto login user if the token is still valid , if not needs to login again
-                // validity is 7 days for refresh token
-
-                // save the refresh token info on db
-                await UpdateRefreshTokenAsync(user, refreshToken);
-
-                _logger.LogInformation($"UserControler: {DateTime.UtcNow.ToString("hh:mm:ss")} got access token: {token}");
-
-                return Ok(new Response
-                {
-                    Status = ApiResponseType.Success,
-                    Message = "login successfull.",
-                    Data = new Token
-                    {
-                        Value = token,
-                        RoleType = RoleType.User.ToString()
-                    }
-                });
-            }
+                    Value = token,
+                    RoleType = RoleType.User.ToString()
+                }
+            });
         }
 
         // this will be called when the user opens the app, if user receive UnAuthorized meaning the user needs to login again
