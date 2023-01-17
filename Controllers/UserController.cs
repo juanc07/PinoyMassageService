@@ -170,7 +170,7 @@ namespace PinoyMassageService.Controllers
             User user = new User
             {
                 Id = Guid.NewGuid(),
-                Username = userDto.Email,
+                Username = userDto.MobileNumber,
                 MobileNumber = userDto.MobileNumber,
                 Email = userDto.Email,
                 DisplayName = userDto.DisplayName,
@@ -261,7 +261,7 @@ namespace PinoyMassageService.Controllers
             string uid = null;
             try
             {
-                uid = await FirebaseAuthService.Instance.GetUserUid(userDto.idTokenFromExternal, _logger);
+                uid = await FirebaseAuthService.Instance.GetUserUid(userDto.IdTokenFromExternal, _logger);
                 if (string.IsNullOrWhiteSpace(uid))
                 {
                     _logger.LogInformation($"UserControler: {DateTime.UtcNow.ToString("hh:mm:ss")} is null or empty Guid: {uid}");
@@ -297,11 +297,14 @@ namespace PinoyMassageService.Controllers
 
             if (!String.IsNullOrEmpty(userDto.UserName))
             {
+                // this is also phone numer
                 user = await _repository.GetUserByUserNameAsync(userDto.UserName);
             }
             else
             {
-                user = await _repository.GetUserByMobileNumberAsync(userDto.mobileNumber);
+                // so this is redundant should we pick email instead?
+                // or not phone number no registration?
+                //user = await _repository.GetUserByMobileNumberAsync(userDto.email);             
             }
 
             if (user == null)

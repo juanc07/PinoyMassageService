@@ -16,7 +16,7 @@ namespace PinoyMassageService.Dtos
             string FirebaseId, string FacebookId, string GoogleId, int AccountType);
         public record CreateAdminDto([Required] string UserName, [Required] string Password);
         public record LoginUserDto([Required] string UserName, [Required] string Password);
-        public record LoginUserExternalDto(string UserName, [Required] string idTokenFromExternal,string mobileNumber);
+        public record LoginUserExternalDto(string UserName, [Required] string IdTokenFromExternal,string Email);
         public record UpdatePasswordDto([Required]  string Password);        
 
         // contact info
