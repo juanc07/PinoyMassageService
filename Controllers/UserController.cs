@@ -543,7 +543,7 @@ namespace PinoyMassageService.Controllers
 
         // GET /accounts/{email}
         [HttpGet("{email}")]
-        public async Task<ActionResult<UserDto>> GetAccountByEmailAsync(string email)
+        public async Task<ActionResult<UserDto>> GetUserByEmailAsync(string email)
         {
             var user = await _repository.GetUserByEmailAsync(email);
             if (user is null)
@@ -555,7 +555,7 @@ namespace PinoyMassageService.Controllers
 
         // GET /accounts/{mobilenumber}
         [HttpGet("{mobilenumber}")]
-        public async Task<ActionResult<UserDto>> GetAccountByMobileNumberAsync(string mobilenumber)
+        public async Task<ActionResult<UserDto>> GetUserByMobileNumberAsync(string mobilenumber)
         {
             var user = await _repository.GetUserByMobileNumberAsync(mobilenumber);
             if (user is null)
@@ -563,6 +563,38 @@ namespace PinoyMassageService.Controllers
                 return NotFound();
             }
             return user.AsDto();
+        }
+        
+        [HttpGet("{mobilenumber}")]
+        public async Task<ActionResult<string>> CheckUserMobileNumberAsync(string mobilenumber)
+        {
+            // TODO: needs to check if mobile number is in correct format
+
+            var exists = await _repository.CheckUserMobileNumberAsync(mobilenumber);
+            if (exists)
+            {
+                return Ok(new Response
+                {
+                    Status = ApiResponseType.Success,
+                    Message = $"User with mobilenumber {mobilenumber} was found.",
+                    Data = new PhoneNumberCheckData
+                    {
+                        Exists = true
+                    }
+                });                
+            }
+            else
+            {
+                return NotFound(new Response
+                {
+                    Status = ApiResponseType.Failed,
+                    Message = $"User with mobilenumber {mobilenumber} not found.",
+                    Data = new PhoneNumberCheckData
+                    {
+                        Exists = false
+                    }
+                });
+            }            
         }
 
         // PUT /accounts/id        

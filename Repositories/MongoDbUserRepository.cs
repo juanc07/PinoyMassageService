@@ -47,8 +47,14 @@ namespace PinoyMassageService.Repositories
 
         public async Task<User> GetUserByMobileNumberAsync(string mobilenumber)
         {
-            var filter = filterBuilder.Eq(user => user.MobileNumber, mobilenumber);
+            var filter = filterBuilder.Eq(user => user.MobileNumber, mobilenumber);            
             return await usersCollection.Find(filter).FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> CheckUserMobileNumberAsync(string mobilenumber)
+        {
+            var filter = filterBuilder.Eq(user => user.MobileNumber, mobilenumber);
+            return await usersCollection.Find(filter).AnyAsync();            
         }
 
         public async Task<IEnumerable<User>> GetUsersAsync()
