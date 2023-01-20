@@ -564,7 +564,34 @@ namespace PinoyMassageService.Controllers
             }
             return user.AsDto();
         }
-        
+
+        [HttpGet("{provider}/{providerId}")]
+        public async Task<ActionResult<string>> GetUserMobileNumberByProviderAsync(string provider, string providerId)
+        {
+            var mobileNumber = await _repository.GetUserMobileNumberByProviderAsync(provider, providerId);
+            if ( string.IsNullOrEmpty(mobileNumber))
+            {
+                return Ok(new Response
+                {
+                    Status = ApiResponseType.Failed,
+                    Message = $"User with provider {provider} and providerId {providerId} was not found.",
+                    Data = new PhoneNumberData
+                    {
+                        PhoneNumber = ""
+                    }
+                });
+            }
+            return Ok(new Response
+            {
+                Status = ApiResponseType.Success,
+                Message = $"User with provider {provider} and providerId {providerId} was found.",
+                Data = new PhoneNumberData
+                {
+                    PhoneNumber = mobileNumber
+                }
+            });
+        }
+
         [HttpGet("{mobilenumber}")]
         public async Task<ActionResult<string>> CheckUserMobileNumberAsync(string mobilenumber)
         {
@@ -585,10 +612,10 @@ namespace PinoyMassageService.Controllers
             }
             else
             {
-                return NotFound(new Response
+                return Ok(new Response
                 {
-                    Status = ApiResponseType.Failed,
-                    Message = $"User with mobilenumber {mobilenumber} not found.",
+                    Status = ApiResponseType.Success,
+                    Message = $"User with mobilenumber {mobilenumber} was not found.",
                     Data = new PhoneNumberCheckData
                     {
                         Exists = false
@@ -626,6 +653,20 @@ namespace PinoyMassageService.Controllers
             existingUser.Email = updateEmailDto.Email;
 
             await _repository.UpdateUserAsync(existingUser);
+            return NoContent();
+        }
+
+        [HttpPut("{mobileNumber}/{googleUserId}")]
+        public async Task<ActionResult> UpdateUserGoogleUserIdAsync(string mobileNumber, string googleUserId)
+        {
+            await _repository.UpdateUserGoogleUserIdAsync(mobileNumber, googleUserId);            
+            return NoContent();
+        }
+
+        [HttpPut("{mobileNumber}/{facebookUserId}")]
+        public async Task<ActionResult> UpdateUserFacebookUserIdAsync(string mobileNumber, string facebookUserId)
+        {
+            await _repository.UpdateUserFacebookUserIdAsync(mobileNumber, facebookUserId);
             return NoContent();
         }
     }

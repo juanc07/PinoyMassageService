@@ -51,6 +51,22 @@ namespace PinoyMassageService.Repositories
             return await usersCollection.Find(filter).FirstOrDefaultAsync();
         }
 
+       public async Task<string> GetUserMobileNumberByProviderAsync(string provider, string providerId)
+        {
+            if (provider=="facebook")
+            {
+                var filter = filterBuilder.Eq(user => user.FacebookId, providerId);
+                var projection = Builders<User>.Projection.Expression(x => x.MobileNumber);
+                return await usersCollection.Find(filter).Project(projection).FirstOrDefaultAsync();
+            }
+            else
+            {
+                var filter = filterBuilder.Eq(user => user.GoogleId, providerId);
+                var projection = Builders<User>.Projection.Expression(x => x.MobileNumber);
+                return await usersCollection.Find(filter).Project(projection).FirstOrDefaultAsync();
+            }            
+        }
+
         public async Task<bool> CheckUserMobileNumberAsync(string mobilenumber)
         {
             var filter = filterBuilder.Eq(user => user.MobileNumber, mobilenumber);
@@ -66,6 +82,20 @@ namespace PinoyMassageService.Repositories
         {
             var filter = filterBuilder.Eq(existingUser => existingUser.Id, user.Id);
             await usersCollection.ReplaceOneAsync(filter, user);
-        }        
+        }
+
+        public async Task UpdateUserGoogleUserIdAsync(string mobilenumber, string googleUserId)
+        {
+            var filter = filterBuilder.Eq(user => user.MobileNumber, mobilenumber);
+            var update = Builders<User>.Update.Set("GoogleId", googleUserId);
+            await usersCollection.UpdateOneAsync(filter, update);
+        }
+
+        public async Task UpdateUserFacebookUserIdAsync(string mobilenumber, string facebookUserId)
+        {
+            var filter = filterBuilder.Eq(user => user.MobileNumber, mobilenumber);
+            var update = Builders<User>.Update.Set("FacebookId", facebookUserId);
+            await usersCollection.UpdateOneAsync(filter, update);
+        }
     }
 }
