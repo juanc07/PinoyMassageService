@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
+using PinoyMassageService.Constant;
 using PinoyMassageService.Entities;
 
 namespace PinoyMassageService.Repositories
@@ -53,7 +54,7 @@ namespace PinoyMassageService.Repositories
 
        public async Task<string> GetUserMobileNumberByProviderAsync(string provider, string providerId)
         {
-            if (provider=="facebook")
+            if (provider==Provider.FACEBOOK)
             {
                 var filter = filterBuilder.Eq(user => user.FacebookId, providerId);
                 var projection = Builders<User>.Projection.Expression(x => x.MobileNumber);
