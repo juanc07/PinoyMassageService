@@ -83,23 +83,49 @@ namespace PinoyMassageService.Repositories
         {
             var filter = filterBuilder.Eq(existingUser => existingUser.Id, user.Id);
             await usersCollection.ReplaceOneAsync(filter, user);
-        }
+        }        
 
-        public async Task<bool> UpdateUserGoogleUserIdAsync(string mobilenumber, string googleUserId)
+        /*public async Task<bool> UpdateUserProviderIdAsync(string mobilenumber, string provider, string providerId){
+            var filter = filterBuilder.Eq(user => user.MobileNumber, mobilenumber);
+
+            if (provider == Provider.FACEBOOK)
+            {
+                var update = Builders<User>.Update.Set("FacebookId", providerId);
+                var result = await usersCollection.UpdateOneAsync(filter, update);
+                return result.ModifiedCount > 0;
+            }
+            else
+            {
+                var update = Builders<User>.Update.Set("GoogleId", providerId);
+                var result = await usersCollection.UpdateOneAsync(filter, update);
+                return result.ModifiedCount > 0;
+            }                        
+        }*/
+
+        public async Task<bool> UpdateUserProviderIdAsync(string mobilenumber, string provider, string providerId)
         {
             var filter = filterBuilder.Eq(user => user.MobileNumber, mobilenumber);
-            var update = Builders<User>.Update.Set("GoogleId", googleUserId);
-            var result =  await usersCollection.UpdateOneAsync(filter, update);
-            return result.ModifiedCount > 0;
-        }
-        
-
-        public async Task<bool> UpdateUserFacebookUserIdAsync(string mobilenumber, string facebookUserId)
-        {
-            var filter = filterBuilder.Eq(user => user.MobileNumber, mobilenumber);
-            var update = Builders<User>.Update.Set("FacebookId", facebookUserId);
+            var update = Builders<User>.Update.Set(GetProviderFieldName(provider), providerId);
             var result = await usersCollection.UpdateOneAsync(filter, update);
             return result.ModifiedCount > 0;
+        }
+
+        // grab correct field name on db based on provider
+        private string GetProviderFieldName(string provider)
+        {
+            switch (provider)
+            {
+                case Provider.FACEBOOK:
+                    return "FacebookId";
+                case Provider.GOOGLE:
+                    return "GoogleId";
+                case Provider.PHONE:
+                    return "PhoneId";
+                case Provider.PASSWORD:
+                    return "PasswordId";
+                default:
+                    throw new ArgumentException("Invalid provider", nameof(provider));
+            }
         }
 
     }
