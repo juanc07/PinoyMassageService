@@ -13,8 +13,8 @@ namespace PinoyMassageService.Repositories
         Task<IEnumerable<User>> GetUsersAsync();
         Task CreateUserAsync(User user);
         Task UpdateUserAsync(User user);
-        Task UpdateUserGoogleUserIdAsync(string mobilenumber, string googleUserId);
-        Task UpdateUserFacebookUserIdAsync(string mobilenumber, string facebookUserId);
+        Task<bool> UpdateUserGoogleUserIdAsync(string mobilenumber, string googleUserId);
+        Task<bool> UpdateUserFacebookUserIdAsync(string mobilenumber, string facebookUserId);
         Task DeleteUserAsync(Guid id);        
     }
 }

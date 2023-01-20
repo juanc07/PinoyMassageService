@@ -659,15 +659,69 @@ namespace PinoyMassageService.Controllers
         [HttpPut("{mobileNumber}/{googleUserId}")]
         public async Task<ActionResult> UpdateUserGoogleUserIdAsync(string mobileNumber, string googleUserId)
         {
-            await _repository.UpdateUserGoogleUserIdAsync(mobileNumber, googleUserId);            
-            return NoContent();
+            var exists = await _repository.CheckUserMobileNumberAsync(mobileNumber);
+            if (!exists)
+            {
+                return NotFound(new Response
+                {
+                    Status = "failed",
+                    Message = $"User with mobile number {mobileNumber} was not found.",
+                    Data = new JObject()
+                });
+            }
+            else
+            {
+                var result = await _repository.UpdateUserGoogleUserIdAsync(mobileNumber, googleUserId);
+                if (result)
+                {
+                    return Ok(new Response
+                    {
+                        Status = "success",
+                        Message = $"User with mobile number {mobileNumber} has been updated with Google User ID {googleUserId}.",
+                        Data = new JObject()
+                    });
+                }
+                return Conflict(new Response
+                {
+                    Status = "failed",
+                    Message = $"failed to update the Google User id with user with mobileNumber {mobileNumber}.",
+                    Data = new JObject()
+                });
+            }            
         }
 
         [HttpPut("{mobileNumber}/{facebookUserId}")]
         public async Task<ActionResult> UpdateUserFacebookUserIdAsync(string mobileNumber, string facebookUserId)
         {
-            await _repository.UpdateUserFacebookUserIdAsync(mobileNumber, facebookUserId);
-            return NoContent();
+            var exists = await _repository.CheckUserMobileNumberAsync(mobileNumber);
+            if (!exists)
+            {
+                return NotFound(new Response
+                {
+                    Status = "failed",
+                    Message = $"User with mobile number {mobileNumber} was not found.",
+                    Data = new JObject()
+                });
+            }
+            else
+            {
+                var result = await _repository.UpdateUserFacebookUserIdAsync(mobileNumber, facebookUserId);
+                if (result)
+                {
+                    return Ok(new Response
+                    {
+                        Status = "success",
+                        Message = $"User with mobile number {mobileNumber} has been updated with Facebook User ID {facebookUserId}.",
+                        Data = new JObject()
+                    });
+                }
+                return Conflict(new Response
+                {
+                    Status = "failed",
+                    Message = $"failed to update the Facebook User id with user with mobileNumber {mobileNumber}.",
+                    Data = new JObject()
+                });
+            }            
         }
     }
 }
