@@ -664,7 +664,7 @@ namespace PinoyMassageService.Controllers
             {
                 return NotFound(new Response
                 {
-                    Status = "failed",
+                    Status = ApiResponseType.Failed,
                     Message = $"User with mobile number {mobileNumber} was not found.",
                     Data = new JObject()
                 });
@@ -676,14 +676,14 @@ namespace PinoyMassageService.Controllers
                 {
                     return Ok(new Response
                     {
-                        Status = "success",
+                        Status = ApiResponseType.Success,
                         Message = $"User with mobile number {mobileNumber} has been updated with {provider} User ID {providerId}.",
                         Data = new JObject()
                     });
                 }
                 return Conflict(new Response
                 {
-                    Status = "failed",
+                    Status = ApiResponseType.Failed,
                     Message = $"failed to update the {provider} User id with user with mobileNumber {mobileNumber}.",
                     Data = new JObject()
                 });
