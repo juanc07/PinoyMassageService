@@ -63,18 +63,6 @@ namespace PinoyMassageService.Controllers
             return account.AsDto();
         }        
 
-        // GET /accounts/{handle}
-        [HttpGet("{handle}")]
-        public async Task<ActionResult<AccountDto>> GetAccountByHandleNameAsync(string handle)
-        {
-            var account = await repository.GetAccountByHandleNameAsync(handle);
-            if (account is null)
-            {
-                return NotFound();
-            }
-            return account.AsDto();
-        }        
-
         // Gets /accounts        
         [HttpGet]
         public async Task<IEnumerable<AccountDto>> GetAccountsAsync()
@@ -98,8 +86,7 @@ namespace PinoyMassageService.Controllers
             }
 
             existingAccount.FirstName = accountDto.FirstName;
-            existingAccount.LastName = accountDto.LastName;
-            existingAccount.HandleName = accountDto.HandleName;
+            existingAccount.LastName = accountDto.LastName;            
 
             await repository.UpdateAccountAsync(existingAccount);
             return NoContent();
@@ -117,8 +104,7 @@ namespace PinoyMassageService.Controllers
             }
 
             existingAccount.FirstName = accountDto.FirstName;
-            existingAccount.LastName = accountDto.LastName;
-            existingAccount.HandleName = accountDto.HandleName;
+            existingAccount.LastName = accountDto.LastName;            
             existingAccount.IdentificationType = accountDto.IdentificationType;
             existingAccount.IdentificationNumber = accountDto.IdentificationNumber;
 

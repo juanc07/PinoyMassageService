@@ -34,12 +34,6 @@ namespace PinoyMassageService.Repositories
             return await accountsCollection.Find(filter).FirstOrDefaultAsync();
         }        
 
-        public async Task<Account> GetAccountByHandleNameAsync(string handlename)
-        {
-            var filter = filterBuilder.Eq(account => account.HandleName, handlename);
-            return await accountsCollection.Find(filter).FirstOrDefaultAsync();
-        }
-
         public async Task<IEnumerable<Account>> GetAccountsAsync()
         {
             return await accountsCollection.Find(new BsonDocument()).ToListAsync();

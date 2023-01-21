@@ -6,8 +6,7 @@ namespace PinoyMassageService.Entities
     {
         // account base
         public Guid Id { get; set; }
-        public Guid UserId { get; set; }                
-        public string HandleName { get; set; }
+        public Guid UserId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public int Gender { get; set; }

@@ -505,12 +505,31 @@ namespace PinoyMassageService.Controllers
         // Gets /accounts        
         //[HttpGet, Authorize]
         [HttpGet]
-        public async Task<IEnumerable<UserDto>> GetUsersAsync()
+        //public async Task<IEnumerable<UserDto>> GetUsersAsync()
+        public async Task<IActionResult> GetUsersAsync()
         {
             var users = (await _repository.GetUsersAsync()).Select(user => user.AsDto());
 
             _logger.LogInformation($"{DateTime.UtcNow.ToString("hh:mm:ss")}: GetAllAccountsAsync Retrieved {users.Count()} users");
-            return users;
+
+            if (users.Count() > 0)
+            {
+                return Ok(new Response
+                {
+                    Status = ApiResponseType.Success,
+                    Message = "Retrieved users successfully.",
+                    Data = users
+                });
+            }
+            else
+            {
+                return Ok(new Response
+                {
+                    Status = ApiResponseType.Failed,
+                    Message = "Retrieved users failed users is empty.",
+                    Data = new JObject()
+                });
+            }
         }
 
         // GET /users/{username}
