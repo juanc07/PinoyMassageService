@@ -563,6 +563,7 @@ namespace PinoyMassageService.Controllers
             }
 
             var users = (await _repository.GetUsersByUserNameAsync(username));
+            var mappedUsers = users.Select(user => _mapper.Map<UserDto>(user)).ToList();
             _logger.LogInformation($"{DateTime.UtcNow.ToString("hh:mm:ss")}: Retrieved {users.Count()} users");
 
             if (users.Count() > 0)
@@ -571,7 +572,7 @@ namespace PinoyMassageService.Controllers
                 {
                     Status = ApiResponseType.Success,
                     Message = $"Retrieved users by username: {username} successfully.",
-                    Data = users
+                    Data = mappedUsers
                 });
             }
             else
