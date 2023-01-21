@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using PinoyMassageService.Dtos;
 using PinoyMassageService.Entities;
 using static PinoyMassageService.Dtos.UserDtos;
 

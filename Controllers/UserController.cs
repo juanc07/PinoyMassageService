@@ -6,20 +6,20 @@ using static PinoyMassageService.Dtos.UserDtos;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using PinoyMassageService.Repositories;
-using PinoyMassageService.Extensions;
 using static PinoyMassageService.Dtos.AccountDtos;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using PinoyMassageService.Constant;
 using static PinoyMassageService.Dtos.RefreshTokenDtos;
 using Newtonsoft.Json.Linq;
-using Google.Apis.Auth.OAuth2;
 using PinoyMassageService.Helpers;
 using FirebaseAdmin.Auth;
 using PinoyMassageService.ResponseObject;
-using System.Text.Json.Nodes;
-using Microsoft.Extensions.Logging;
 using AutoMapper;
+using Newtonsoft.Json;
+using PinoyMassageService.Dtos;
+
+
 
 namespace PinoyMassageService.Controllers
 {
@@ -522,7 +522,10 @@ namespace PinoyMassageService.Controllers
                 {
                     Status = ApiResponseType.Success,
                     Message = "Retrieved users successfully.",
-                    Data = users
+                    Data = new UsersData
+                    {
+                        Users = users.ToList()
+                    }
                 });
             }
             else

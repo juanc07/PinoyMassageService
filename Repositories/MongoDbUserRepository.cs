@@ -89,24 +89,7 @@ namespace PinoyMassageService.Repositories
         {
             var filter = filterBuilder.Eq(existingUser => existingUser.Id, user.Id);
             await usersCollection.ReplaceOneAsync(filter, user);
-        }        
-
-        /*public async Task<bool> UpdateUserProviderIdAsync(string mobilenumber, string provider, string providerId){
-            var filter = filterBuilder.Eq(user => user.MobileNumber, mobilenumber);
-
-            if (provider == Provider.FACEBOOK)
-            {
-                var update = Builders<User>.Update.Set("FacebookId", providerId);
-                var result = await usersCollection.UpdateOneAsync(filter, update);
-                return result.ModifiedCount > 0;
-            }
-            else
-            {
-                var update = Builders<User>.Update.Set("GoogleId", providerId);
-                var result = await usersCollection.UpdateOneAsync(filter, update);
-                return result.ModifiedCount > 0;
-            }                        
-        }*/
+        }
 
         public async Task<bool> UpdateUserProviderIdAsync(string mobilenumber, string provider, string providerId)
         {
