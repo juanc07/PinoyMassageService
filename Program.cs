@@ -1,4 +1,7 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MongoDB.Bson;
@@ -7,6 +10,7 @@ using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using PinoyMassageService.Controllers.Services;
 using PinoyMassageService.Extensions;
+using PinoyMassageService.Mappers;
 using PinoyMassageService.Repositories;
 using PinoyMassageService.Settings;
 using Swashbuckle.AspNetCore.Filters;
@@ -22,6 +26,14 @@ BsonSerializer.RegisterSerializer(new DateTimeOffsetSerializer(BsonType.String))
 
 var mongoDbSettings = builder.Configuration.GetSection(nameof(MongoDBSettings)).Get<MongoDBSettings>();
 
+
+// AutoMapper configuration
+var config = new MapperConfiguration(cfg =>
+{
+    cfg.AddProfile<UserProfile>();
+});
+var mapper = config.CreateMapper();
+builder.Services.AddSingleton<IMapper>(mapper);
 
 builder.Services.AddSingleton<IMongoClient>(serviceProvider =>
 {
@@ -71,6 +83,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = false
         };
     });
+
 
 var app = builder.Build();
 
@@ -142,5 +155,7 @@ app.UseEndpoints(endpoints =>
 
 
 app.Run();
+
+
 
 

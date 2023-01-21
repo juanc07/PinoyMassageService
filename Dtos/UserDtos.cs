@@ -4,11 +4,11 @@ namespace PinoyMassageService.Dtos
 {
     public class UserDtos
     {
-        public record UserDto(Guid Id,  string UserName, string Password, byte[] PasswordHash, byte[] PasswordSalt, int AccountType,
-            string Email, string MobileNumber,string DisplayName, string FacebookId,string GoogleId,string FirebaseId, DateTimeOffset CreatedDate);
+        /*public record UserDto(Guid Id,  string UserName, string Password, byte[] PasswordHash, byte[] PasswordSalt, int AccountType,
+            string Email, string MobileNumber,string DisplayName, string FacebookId,string GoogleId,string FirebaseId, DateTimeOffset CreatedDate);*/
 
-        /*public record UserDto(Guid Id, string UserName, int AccountType,
-            string Email, string MobileNumber, string DisplayName, string FacebookId, string GoogleId, string FirebaseId, DateTimeOffset CreatedDate);*/
+        public record UserDto(Guid Id, string UserName, int AccountType,
+            string Email, string MobileNumber, string DisplayName, string FacebookId, string GoogleId, string FirebaseId, DateTimeOffset CreatedDate);
 
         public record UserExternalDto(Guid Id, string UserName,int AccountType, string Email, string MobileNumber, string DisplayName, 
             string FacebookId, string GoogleId, string FirebaseId, DateTimeOffset CreatedDate);

@@ -79,6 +79,12 @@ namespace PinoyMassageService.Repositories
             return await usersCollection.Find(new BsonDocument()).ToListAsync();
         }
 
+        public async Task<IEnumerable<User>> GetUsersByUserNameAsync(string userName)
+        {
+            var filter = filterBuilder.Eq(user => user.Username, userName);
+            return await usersCollection.Find(filter).ToListAsync();
+        }
+
         public async Task UpdateUserAsync(User user)
         {
             var filter = filterBuilder.Eq(existingUser => existingUser.Id, user.Id);

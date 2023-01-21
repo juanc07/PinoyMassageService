@@ -19,6 +19,7 @@ using FirebaseAdmin.Auth;
 using PinoyMassageService.ResponseObject;
 using System.Text.Json.Nodes;
 using Microsoft.Extensions.Logging;
+using AutoMapper;
 
 namespace PinoyMassageService.Controllers
 {
@@ -33,13 +34,15 @@ namespace PinoyMassageService.Controllers
         private readonly IUserRepository _repository;
         private readonly IAccountRepository _accountRepository;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
+        private readonly IMapper _mapper;
         private readonly ILogger<UserController> _logger;
 
 
         public UserController(
             IConfiguration configuration, IUserService userService,
             IUserRepository repository, IAccountRepository accountRepository,
-            IRefreshTokenRepository refreshTokenRepository, ILogger<UserController> logger
+            IRefreshTokenRepository refreshTokenRepository, IMapper mapper,
+            ILogger<UserController> logger
             )
         {
             _configuration = configuration;
@@ -47,6 +50,7 @@ namespace PinoyMassageService.Controllers
             _repository = repository;
             _accountRepository = accountRepository;
             _refreshTokenRepository = refreshTokenRepository;
+            _mapper = mapper;
             _logger = logger;
         }
 
@@ -93,7 +97,8 @@ namespace PinoyMassageService.Controllers
                     CreatedDate = DateTime.UtcNow
                 });
 
-                return CreatedAtAction(nameof(GetUserAsync), new { id = user.Id }, user.AsDto());
+                //return CreatedAtAction(nameof(GetUserAsync), new { id = user.Id }, user.AsDto());
+                return CreatedAtAction(nameof(GetUserAsync), new { id = user.Id }, _mapper.Map<User, UserDto>(user));
             }
             return BadRequest("User already exists!");
         }
@@ -188,8 +193,8 @@ namespace PinoyMassageService.Controllers
                 UserId = user.Id,                
                 CreatedDate = DateTime.UtcNow
             });
-
-            var dto = user.AsDto();
+            
+            var dto = _mapper.Map<User, UserDto>(user);            
             return CreatedAtAction(nameof(GetUserAsync), new { id = user.Id }, new Response
             {
                 Status = ApiResponseType.Success,
@@ -207,8 +212,8 @@ namespace PinoyMassageService.Controllers
             if (user is null)
             {
                 return NotFound();
-            }
-            return user.AsDto();
+            }            
+            return _mapper.Map<User, UserDto>(user);
         }
 
         [HttpPost("login")]
@@ -504,11 +509,10 @@ namespace PinoyMassageService.Controllers
 
         // Gets /accounts        
         //[HttpGet, Authorize]
-        [HttpGet]
-        //public async Task<IEnumerable<UserDto>> GetUsersAsync()
+        [HttpGet]        
         public async Task<IActionResult> GetUsersAsync()
-        {
-            var users = (await _repository.GetUsersAsync()).Select(user => user.AsDto());
+        {            
+            var users = (await _repository.GetUsersAsync()).Select(user => _mapper.Map<UserDto>(user));
 
             _logger.LogInformation($"{DateTime.UtcNow.ToString("hh:mm:ss")}: GetAllAccountsAsync Retrieved {users.Count()} users");
 
@@ -540,24 +544,42 @@ namespace PinoyMassageService.Controllers
             if (user is null)
             {
                 return NotFound();
-            }
-            return user.AsDto();
+            }            
+            return _mapper.Map<User, UserDto>(user);
+
         }
 
         // Gets /users        
-        //[HttpGet,Authorize]
-        [HttpGet]
-        public async Task<IEnumerable<UserDto>> GetUsersByUserNameAsync(string userName = null)
+        //[HttpGet,Authorize]        
+        [HttpGet("{username}")]
+        public async Task<IActionResult> GetUsersByUserNameAsync(string username = null)
         {
-            var users = (await _repository.GetUsersAsync()).Select(user => user.AsDto());
-
-            if (!string.IsNullOrWhiteSpace(userName))
+            if (string.IsNullOrEmpty(username))
             {
-                users = users.Where(user => user.UserName.Equals(userName, StringComparison.OrdinalIgnoreCase));
+                return NotFound();
             }
 
+            var users = (await _repository.GetUsersByUserNameAsync(username));
             _logger.LogInformation($"{DateTime.UtcNow.ToString("hh:mm:ss")}: Retrieved {users.Count()} users");
-            return users;
+
+            if (users.Count() > 0)
+            {
+                return Ok(new Response
+                {
+                    Status = ApiResponseType.Success,
+                    Message = $"Retrieved users by username: {username} successfully.",
+                    Data = users
+                });
+            }
+            else
+            {
+                return Ok(new Response
+                {
+                    Status = ApiResponseType.Failed,
+                    Message = $"Retrieved users by username: {username} failed users is empty.",
+                    Data = new JObject()
+                });
+            }
         }
 
         // GET /accounts/{email}
@@ -568,8 +590,8 @@ namespace PinoyMassageService.Controllers
             if (user is null)
             {
                 return NotFound();
-            }
-            return user.AsDto();
+            }            
+            return _mapper.Map<User, UserDto>(user);
         }
 
         // GET /accounts/{mobilenumber}
@@ -580,8 +602,8 @@ namespace PinoyMassageService.Controllers
             if (user is null)
             {
                 return NotFound();
-            }
-            return user.AsDto();
+            }            
+            return _mapper.Map<User, UserDto>(user);
         }
 
         [HttpGet("{provider}/{providerId}")]
