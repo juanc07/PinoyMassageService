@@ -85,10 +85,11 @@ namespace PinoyMassageService.Repositories
             return await usersCollection.Find(filter).ToListAsync();
         }
 
-        public async Task UpdateUserAsync(User user)
+        public async Task<bool> UpdateUserAsync(User user)
         {
             var filter = filterBuilder.Eq(existingUser => existingUser.Id, user.Id);
-            await usersCollection.ReplaceOneAsync(filter, user);
+            var result = await usersCollection.ReplaceOneAsync(filter, user);
+            return result.ModifiedCount > 0;
         }
 
         public async Task<bool> UpdateUserProviderIdAsync(string mobilenumber, string provider, string providerId)
