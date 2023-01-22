@@ -13,7 +13,8 @@ namespace PinoyMassageService.Dtos
 
         public record UserExternalDto(Guid Id, string UserName,int AccountType, string Email, string MobileNumber, string DisplayName, 
             string FacebookId, string GoogleId, string FirebaseId, DateTimeOffset CreatedDate);
-        public record CreateUserDto([Required] string Email, [Required] string Password, int AccountType, string MobileNumber);        
+        public record CreateUserDto([Required] string Email, [Required] string Password, int AccountType, string MobileNumber, string DisplayName,
+            string FirebaseId, string FacebookId, string GoogleId);        
         public record CreateUserExternalDto([Required] string MobileNumber, [Required] string Email, [Required] string DisplayName,
             string FirebaseId, string FacebookId, string GoogleId, int AccountType);
         public record CreateAdminDto([Required] string UserName, [Required] string Password);

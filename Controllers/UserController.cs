@@ -95,6 +95,10 @@ namespace PinoyMassageService.Controllers
                     PasswordSalt = passwordSalt,
                     AccountType = userDto.AccountType,
                     MobileNumber = userDto.MobileNumber,
+                    DisplayName = "",
+                    FacebookId="",
+                    GoogleId = "",
+                    FirebaseId = "",
                     CreatedDate = DateTime.UtcNow
                 };
 
@@ -618,7 +622,7 @@ namespace PinoyMassageService.Controllers
             {
                 return Ok(new Response
                 {
-                    Status = ApiResponseType.Failed,
+                    Status = ApiResponseType.Success,
                     Message = $"User with mobilenumber {mobilenumber} was not found.",
                     Data = new PhoneNumberCheckData
                     {
