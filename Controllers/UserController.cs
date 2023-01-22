@@ -69,10 +69,19 @@ namespace PinoyMassageService.Controllers
 
 
         [HttpPost("register")]
-        public async Task<ActionResult<AccountDto>> Register(CreateUserDto userDto)
+        public async Task<IActionResult> Register(CreateUserDto userDto)
         {
-            var foundUser = await _repository.GetUserByUserNameAsync(userDto.Email);
-            if (foundUser == null)
+            var exists = await _repository.GetUserByEmailAsync(userDto.Email);
+            if (exists != null)
+            {
+                return Conflict(new Response
+                {
+                    Status = ApiResponseType.Failed,
+                    Message = "User with this email already exists.",
+                    Data = new JObject()
+                });
+            }
+            else
             {
                 CreatePasswordHash(userDto.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
@@ -95,23 +104,27 @@ namespace PinoyMassageService.Controllers
                     Id = Guid.NewGuid(),
                     UserId = user.Id,
                     CreatedDate = DateTime.UtcNow
+                });                
+
+                return CreatedAtAction(nameof(GetUserAsync), new { id = user.Id }, new Response
+                {
+                    Status = ApiResponseType.Success,
+                    Message = "User created successfully.",
+                    Data = _mapper.Map<User, UserDto>(user)
                 });
-                
-                return CreatedAtAction(nameof(GetUserAsync), new { id = user.Id }, _mapper.Map<User, UserDto>(user));
-            }
-            return BadRequest("User already exists!");
+            }            
         }        
 
         [HttpPost("registerExternal")]
         public async Task<IActionResult> Register(CreateUserExternalDto userDto)
         {
-            var foundUser = await _repository.GetUserByUserNameAsync(userDto.Email);
+            var foundUser = await _repository.GetUserByUserNameAsync(userDto.MobileNumber);
             if (foundUser != null)
             {
                 return Conflict(new Response
                 {
                     Status = ApiResponseType.Failed,
-                    Message = "User with this email already exists.",
+                    Message = "User with this phone number already exists.",
                     Data = new JObject()
                 });
             }
@@ -152,14 +165,8 @@ namespace PinoyMassageService.Controllers
         public async Task<ActionResult<string>> Login(LoginUserDto userDto)
         {
             var user = await _repository.GetUserByUserNameAsync(userDto.UserName);
-
             if (user != null)
             {
-                if (!user.Username.Equals(userDto.UserName, StringComparison.Ordinal))
-                {
-                    return BadRequest("User not found");
-                }
-
                 if (!VerifyPasswordHash(userDto.Password, user.PasswordHash, user.PasswordSalt))
                 {
                     return BadRequest("Wrong password");
@@ -175,20 +182,32 @@ namespace PinoyMassageService.Controllers
                 // validity is 7 days for refresh token
 
                 // save the refresh token info on db
-                await UpdateRefreshTokenAsync(user, refreshToken);
-
-
-                JObject jsonObject = new JObject();
-                jsonObject["token"] = token;
+                await UpdateRefreshTokenAsync(user, refreshToken);                
 
                 return Ok(new Response
                 {
                     Status = ApiResponseType.Success,
                     Message = "login successfull.",
-                    Data = jsonObject
+                    Data = new Token
+                    {
+                        Value = token,
+                        RoleType = RoleType.User.ToString()
+                    }
                 });
             }
-            return BadRequest("User not found");
+            else
+            {
+                return NotFound(new Response
+                {
+                    Status = ApiResponseType.Failed,
+                    Message = $"User with username {userDto.UserName} not found.",
+                    Data = new Token
+                    {
+                        Value = "",
+                        RoleType = RoleType.User.ToString()
+                    }
+                });
+            }            
         }
 
         [HttpPost("loginExternal")]

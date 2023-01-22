@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using PinoyMassageService.Entities;
-using PinoyMassageService.Extensions;
 using PinoyMassageService.Repositories;
 using static PinoyMassageService.Dtos.AccountDtos;
 
@@ -12,11 +12,13 @@ namespace PinoyMassageService.Controllers
     public class AccountsController:ControllerBase
     {
         private readonly IAccountRepository repository;
+        private readonly IMapper _mapper;
         private readonly ILogger<AccountsController> logger;
 
-        public AccountsController(IAccountRepository repository, ILogger<AccountsController> logger)
+        public AccountsController(IAccountRepository repository, IMapper mapper, ILogger<AccountsController> logger)
         {
             this.repository = repository;
+            this._mapper = mapper;
             this.logger = logger;
         }
 
@@ -35,7 +37,7 @@ namespace PinoyMassageService.Controllers
                 };
 
                 await repository.CreateAccountAsync(account);
-                return CreatedAtAction(nameof(GetAccountAsync), new { id = account.Id }, account.AsDto());
+                return CreatedAtAction(nameof(GetAccountAsync), new { id = account.Id }, _mapper.Map<Account, AccountDto>(account));
             }
             return BadRequest("Account already exists!");
         }
@@ -49,7 +51,7 @@ namespace PinoyMassageService.Controllers
             {
                 return NotFound();
             }
-            return account.AsDto();
+            return _mapper.Map<Account, AccountDto>(account);
         }
 
         [HttpGet("{userId}")]
@@ -60,15 +62,14 @@ namespace PinoyMassageService.Controllers
             {
                 return NotFound();
             }
-            return account.AsDto();
+            return _mapper.Map<Account, AccountDto>(account);
         }        
 
         // Gets /accounts        
         [HttpGet]
         public async Task<IEnumerable<AccountDto>> GetAccountsAsync()
         {
-            var accounts = (await repository.GetAccountsAsync()).Select(account => account.AsDto());            
-
+            var accounts = (await repository.GetAccountsAsync()).Select(account => _mapper.Map<AccountDto>(account));
             logger.LogInformation($"{DateTime.UtcNow.ToString("hh:mm:ss")}: GetAllAccountsAsync Retrieved {accounts.Count()} accounts");
             return accounts;
         }

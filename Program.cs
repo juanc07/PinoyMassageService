@@ -31,6 +31,7 @@ var mongoDbSettings = builder.Configuration.GetSection(nameof(MongoDBSettings)).
 var config = new MapperConfiguration(cfg =>
 {
     cfg.AddProfile<UserProfile>();
+    cfg.AddProfile<AccountProfile>();
 });
 var mapper = config.CreateMapper();
 builder.Services.AddSingleton<IMapper>(mapper);
