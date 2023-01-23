@@ -9,11 +9,33 @@ on:
       branch:
         description: 'Branch to build and push'
         required: false
-env:
-      DOCKER_HUB_PAT: ${{ env.DOCKER_HUB_PAT }}
+
 jobs:
+  params:
+        name: Make environment variables available to the rest of the workflow
+        runs-on: ubuntu-latest
+        outputs:
+            params: ${{ steps.env-vars.outputs.params }}
+        steps:
+            -   name: install jq
+                run: pip install jq
+            -   id: env-vars
+                name: Output environment variables
+                run: echo "::set-output name=params::$(echo $(jq -n 'env'))"
+
+  setup:
+        needs: [ params ]
+        name: Setup
+        runs-on: ubuntu-latest
+        steps:
+
+            -   name: Use Foo
+                run: echo ${{ env.DOCKER_HUB_PAT }}
+                
   build-push:
     runs-on: ubuntu-latest    
+    env:
+      DOCKER_HUB_PAT: ${{ env.DOCKER_HUB_PAT }}
     steps:
     - name: Checkout
       uses: actions/checkout@v2
