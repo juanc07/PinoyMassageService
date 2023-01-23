@@ -20,8 +20,8 @@ jobs:
             -   name: install jq
                 run: pip install jq
             -   id: env-vars
-                name: Output environment variables
-                run: echo "::set-output name=params::$(echo $(jq -n 'env'))"
+                name: Output environment variables                
+                run: echo "name=params::$(echo $(jq -n 'env'))" >> $GITHUB_OUTPUT
  
                 
   build-push:
