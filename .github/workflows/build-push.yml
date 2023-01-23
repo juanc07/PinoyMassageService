@@ -1,16 +1,20 @@
 name: Build and Push
+
 on:
   push:
     branches:
-      - main
+      - master
   workflow_dispatch:
     inputs:
       branch:
         description: 'Branch to build and push'
         required: false
+
 jobs:
   build-push:
     runs-on: ubuntu-latest
+    env:
+      DOCKER_HUB_PAT: ${{ env.DOCKER_HUB_PAT }}
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -19,6 +23,6 @@ jobs:
         # Build the image
         docker build -t jclaridad07/pinoymassagetestapi:v1.0.2 .
         # Login to your Docker Hub registry
-        echo ${{ secrets.DOCKER_HUB_PAT }} | docker login --username jclaridad07 --password-stdin
+        echo $DOCKER_HUB_PAT | docker login --username jclaridad07 --password-stdin
         # Push the image to Docker Hub
         docker push jclaridad07/pinoymassagetestapi:v1.0.2
