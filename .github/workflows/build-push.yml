@@ -28,7 +28,7 @@ jobs:
     needs: [ params ]
     runs-on: ubuntu-latest    
     env:
-      DOCKER_HUB_PAT: ${{ env.DOCKER_HUB_PAT }}
+      DOCKER_HUB_PAT: env.DOCKER_HUB_PAT
     steps:
     - name: Use Foo
       run: echo ${{ env.DOCKER_HUB_PAT }}                
