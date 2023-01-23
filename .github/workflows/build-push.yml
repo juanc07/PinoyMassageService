@@ -22,21 +22,16 @@ jobs:
             -   id: env-vars
                 name: Output environment variables
                 run: echo "::set-output name=params::$(echo $(jq -n 'env'))"
-
-  setup:
-        needs: [ params ]
-        name: Setup
-        runs-on: ubuntu-latest
-        steps:
-
-            -   name: Use Foo
-                run: echo ${{ env.DOCKER_HUB_PAT }}
+ 
                 
   build-push:
+    needs: [ params ]
     runs-on: ubuntu-latest    
     env:
       DOCKER_HUB_PAT: ${{ env.DOCKER_HUB_PAT }}
     steps:
+    - name: Use Foo
+      run: echo ${{ env.DOCKER_HUB_PAT }}                
     - name: Checkout
       uses: actions/checkout@v2
     - name: Build and Push
