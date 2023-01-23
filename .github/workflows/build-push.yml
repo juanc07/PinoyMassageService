@@ -31,7 +31,7 @@ jobs:
       DOCKER_HUB_PAT:  echo ${{ fromJson(needs.params.outputs.params).DOCKER_HUB_PAT }}
     steps:
     - name: Use Foo
-      run: echo ${{ env.DOCKER_HUB_PAT }}                
+      run:  echo ${{ fromJson(needs.params.outputs.params).DOCKER_HUB_PAT }}                
     - name: Checkout
       uses: actions/checkout@v2
     - name: Build and Push
