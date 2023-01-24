@@ -21,7 +21,10 @@ jobs:
                 run: pip install jq
             -   id: env-vars
                 name: Output environment variables                
-                run: echo "::set-output name=params::$(echo $(jq -n 'env'))"
+                run: |
+                  env_vars=$(printenv | jq -R -s -c 'split("=") | {"name": .[0], "value": .[1]}')
+                env: 
+                  GITHUB_OUTPUT: ${{ env_vars }}
  
                 
   build-push:
@@ -31,7 +34,7 @@ jobs:
       DOCKER_HUB_PAT: dckr_pat_uU2OY9fZmlDcRSWmBOpKcuZz6_w
     steps:
     - name: echo DOCKER_HUB_PAT
-      run:  echo ${{ fromJson(needs.params.outputs.params).DOCKER_HUB_PAT }}                
+      run:  echo ${{ fromJson(env.GITHUB_OUTPUT).DOCKER_HUB_PAT }}                
     - name: Checkout
       uses: actions/checkout@v2
     - name: Build and Push
