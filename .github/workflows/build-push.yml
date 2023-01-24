@@ -1,0 +1,44 @@
+name: Build and Push
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to build and push'
+        required: false
+
+jobs:
+  params:
+        name: Make environment variables available to the rest of the workflow
+        runs-on: ubuntu-latest
+        outputs:
+            params: ${{ steps.env-vars.outputs.params }}
+        steps:
+            -   name: install jq
+                run: pip install jq
+            -   id: env-vars
+                name: Output environment variables                
+                run: echo "::set-output name=params::$(echo $(jq -n 'env'))"
+ 
+                
+  build-push:
+    needs: [ params ]
+    runs-on: ubuntu-latest    
+    env:
+      DOCKER_HUB_PAT: dckr_pat_uU2OY9fZmlDcRSWmBOpKcuZz6_w
+    steps:
+    - name: echo DOCKER_HUB_PAT
+      run:  echo ${{ fromJson(needs.params.outputs.params).DOCKER_HUB_PAT }}                
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Build and Push
+      run: |
+        # Build the image
+        docker build -t jclaridad07/pinoymassagetestapi:v1.0.2 .
+        # Login to your Docker Hub registry
+        echo $DOCKER_HUB_PAT | docker login --username jclaridad07 --password-stdin
+        # Push the image to Docker Hub
+        docker push jclaridad07/pinoymassagetestapi:v1.0.2
