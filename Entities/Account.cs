@@ -6,7 +6,11 @@ namespace PinoyMassageService.Entities
     {
         // account base
         public Guid Id { get; set; }
+        // will become array of contacts
         public Guid UserId { get; set; }
+        // need to add this CompanyName, Company Address, Company Business certifications or permit if required, DTI, Tax Identification ID etc
+
+        // to be remove chunk
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public int Gender { get; set; }
@@ -17,6 +21,7 @@ namespace PinoyMassageService.Entities
         // identification info
         public string IdentificationType { get; set; }
         public string IdentificationNumber { get; set; }
+        // to be remove chunk
 
         // if identification is verified or not
         public bool IsVerified { get; set; }
