@@ -104,8 +104,8 @@ app.MapControllers();
 app.UseEndpoints(endpoints =>
 {
     //endpoints.MapControllers();    
-    endpoints.MapGet("/hello", () => "Hi, frendly!");
-    endpoints.MapGet("/hi", () => "Hello, dude!");
+    endpoints.MapGet("/hello", () => "Hi, frendly 02/16/2023!");
+    endpoints.MapGet("/hi", () => "Hello, dude 02/16/2023!");
     endpoints.MapGet("/TestTimeStamp", () => 
         {             
             DateTimeOffset now = DateTimeOffset.Now;
