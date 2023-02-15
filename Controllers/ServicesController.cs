@@ -7,6 +7,7 @@ using static PinoyMassageService.Dtos.ServiceDtos;
 
 namespace PinoyMassageService.Controllers
 {
+    // we might change or revise this we gonna based on dynamics 365 field service
     [ApiController]    
     [Route("[controller]/[action]")]
     public class ServicesController : ControllerBase
