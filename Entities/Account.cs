@@ -8,7 +8,16 @@ namespace PinoyMassageService.Entities
         public Guid Id { get; set; }
         // will become array of contacts
         public Guid UserId { get; set; }
-        // need to add this CompanyName, Company Address, Company Business certifications or permit if required, DTI, Tax Identification ID etc
+        public string PrimaryContact { get; set; }
+        public string[] Contacts { get; set; }
+        /*
+         * need to add this
+         * CompanyName,
+         * Company Address,
+         * Company Business certifications or permit if required,
+         * DTI,
+         * Tax Identification ID
+         * etc*/
 
         // to be remove chunk
         public string FirstName { get; set; }

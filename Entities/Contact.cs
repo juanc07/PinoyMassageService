@@ -3,7 +3,7 @@
 namespace PinoyMassageService.Entities
 {
     // will become Contact class
-    public class User
+    public class Contact
     {
         public Guid Id { get; set; }
         public string Username { get; set; } = string.Empty;

@@ -1,15 +1,15 @@
 ﻿using AutoMapper;
+using PinoyMassageService.Dtos;
 using PinoyMassageService.Entities;
-using static PinoyMassageService.Dtos.AccountDtos;
 using static PinoyMassageService.Dtos.ContactDtos;
 
 namespace PinoyMassageService.Mappers
 {
-    public class AccountProfile: Profile
+    public class ContactProfile : Profile
     {
-        public AccountProfile()
+        public ContactProfile()
         {
-            CreateMap<Account, AccountDto>();
+            CreateMap<Contact, ContactDto>();
         }
     }
 }

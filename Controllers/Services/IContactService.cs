@@ -1,6 +1,6 @@
 ﻿namespace PinoyMassageService.Controllers.Services
 {
-    public interface IUserService
+    public interface IContactService
     {
         string GetMyName();
         string GetRole();

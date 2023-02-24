@@ -3,11 +3,11 @@
 namespace PinoyMassageService.Controllers.Services
 {
     // for getting claims of a user
-    public class UserService : IUserService
+    public class ContactService : IContactService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserService(IHttpContextAccessor httpContextAccessor)
+        public ContactService(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
         }

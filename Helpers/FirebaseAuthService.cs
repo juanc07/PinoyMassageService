@@ -25,7 +25,7 @@
             FirebaseApp.Create(new AppOptions() { Credential = cred });
         }
 
-        public async Task<string> GetUserUid(string idToken, ILogger<UserController> logger)
+        public async Task<string> GetUserUid(string idToken, ILogger<ContactController> logger)
         {
             try
             {

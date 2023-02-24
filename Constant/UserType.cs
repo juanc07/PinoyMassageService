@@ -2,7 +2,7 @@
 {
     public class RoleType
     {
-        public const string User = "User";        
+        public const string User = "Contact";        
         public const string Admin = "Admin";
     }
 }

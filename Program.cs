@@ -30,7 +30,7 @@ var mongoDbSettings = builder.Configuration.GetSection(nameof(MongoDBSettings)).
 // AutoMapper configuration
 var config = new MapperConfiguration(cfg =>
 {
-    cfg.AddProfile<UserProfile>();
+    cfg.AddProfile<ContactProfile>();
     cfg.AddProfile<AccountProfile>();
 });
 var mapper = config.CreateMapper();
@@ -46,7 +46,7 @@ builder.Services.AddSingleton<IAccountRepository, MongoDbAccountRepository>();
 builder.Services.AddSingleton<IAddressRepository, MongoDbAddressRepository>();
 builder.Services.AddSingleton<IProfileImageRepository, MongoDbProfileImageRepository>();
 builder.Services.AddSingleton<IServiceRepository, MongoDbServiceRepository>();
-builder.Services.AddSingleton<IUserRepository, MongoDbUserRepository>();
+builder.Services.AddSingleton<IContactRepository, MongoDbContactRepository>();
 builder.Services.AddSingleton<IRefreshTokenRepository, MongoDbRefreshTokenRepository>();
 
 builder.Services.AddControllers(options =>
@@ -56,7 +56,7 @@ builder.Services.AddControllers(options =>
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IContactService, ContactService>();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddSwaggerGen(options => {
@@ -104,8 +104,8 @@ app.MapControllers();
 app.UseEndpoints(endpoints =>
 {
     //endpoints.MapControllers();    
-    endpoints.MapGet("/hello", () => "Hi, frendly 02/16/2023!");
-    endpoints.MapGet("/hi", () => "Hello, dude 02/16/2023!");
+    endpoints.MapGet("/hello", () => "Hi, frendly 02/24/2023!");
+    endpoints.MapGet("/hi", () => "Hello, dude 02/24/2023!");
     endpoints.MapGet("/TestTimeStamp", () => 
         {             
             DateTimeOffset now = DateTimeOffset.Now;
